@@ -114,5 +114,3 @@ for i in range(6):
 avg = np.mean(np.array(ys), axis=0)
 # vynesení křivky do grafu
 plt.semilogx(x, avg, color='blue')
-
-
