@@ -10,7 +10,9 @@ import time       # na sleep a stopování jak dlouho trvají operace
 import visa       # import pyVISA
 
 # ruční nastavení VISA knihovny (často není nutné)
-rm = visa.ResourceManager('C:\WINDOWS\SysWOW64\\visa32.dll')
+#rm = visa.ResourceManager('C:\WINDOWS\SysWOW64\\visa32.dll')
+rm = visa.ResourceManager()
+
 
 #print(rm.list_resources())       # print seznamu připojených zařízení
 
@@ -24,14 +26,20 @@ inst = rm.open_resource('GPIB0::17::INSTR')
 #print('Sending: *IDN? ...\n')
 #print(inst.query('*IDN?'))
 
+sw_min = str(100e-12)      # minimum sweepu (od jaké hondoty)
+sw_max = str(1e-12)    # maximum sweepu (po jakou hodnotu)
+
+inst.write("F1,0X")                # Source I, measure V, DC
+inst.write("B"+sw_min+",0,20X")   
+inst.write("N1X")
+inst.write("H0X")
+time.sleep(15)
+
 # nastavení - zdroj: proudu/napětí, měříme: proud/napětí, druh: DC/sweep
 inst.write("F1,1X")    # Source I, measure V, Sweep
 
 # nastavení v jakém formátu vrací přístroj data
 inst.write("G5,2,2X")  # dvojka na konci znamená "všechny hodnoty sweepu najednou"
-
-sw_min = str(1e-12)      # minimum sweepu (od jaké hondoty)
-sw_max = str(100e-12)    # maximum sweepu (po jakou hodnotu)
 
 # nahrání parametrů sweepu do zařízení (odpovídá čudlíku CREATE a jeho nastavení)
 # pozor, nevím jak nastavovat parametr BIAS u swepu - to umím jen přímo na stroji mechanicky
@@ -55,7 +63,7 @@ def run_sweep():
             sweep_done = True
     print('Done.')
     print('Sleeping for 3s...')
-    time.sleep(3)
+    time.sleep(5)
     return inst.read()
 
 
@@ -103,17 +111,19 @@ plt.xlabel('I [A]')
 plt.ylabel('U [V]')
 # plt.ion()
 
-plot_average = False
+plot_average = True
 if plot_average:
     ys = []       # drží y z více měření na závěrečné průměrování
 
 # range určuje kolik VA charakteristik se bude dělat za sebou
-for i in range(1):
+for i in range(6):
     raw_data = run_sweep()
     x, y = plot_sweep(raw_data)
     plt.pause(0.05)
     if plot_average:
         ys.append(y)    # přidání napětí z aktuální charakteristiky do seznamu
+
+inst.write("N0X")
 
 if plot_average:
     # průměrování
