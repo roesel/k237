@@ -101,18 +101,23 @@ fig = plt.figure(1)
 plt.clf()
 plt.xlabel('I [A]')
 plt.ylabel('U [V]')
+# plt.ion()
 
-ys = []       # drží y z více měření na závěrečné průměrování
+plot_average = False
+if plot_average:
+    ys = []       # drží y z více měření na závěrečné průměrování
 
 # range určuje kolik VA charakteristik se bude dělat za sebou
-for i in range(6):
+for i in range(1):
     raw_data = run_sweep()
     x, y = plot_sweep(raw_data)
-    ys.append(y)    # přidání napětí z aktuální charakteristiky do seznamu
+    plt.pause(0.05)
+    if plot_average:
+        ys.append(y)    # přidání napětí z aktuální charakteristiky do seznamu
 
-# průměrování
-avg = np.mean(np.array(ys), axis=0)
-# vynesení křivky do grafu
-plt.semilogx(x, avg, color='blue')
-
-
+if plot_average:
+    # průměrování
+    avg = np.mean(np.array(ys), axis=0)
+    # vynesení křivky do grafu
+    plt.semilogx(x, avg, color='blue')
+    plt.pause(0.05)
