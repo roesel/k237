@@ -10,8 +10,8 @@ import time       # na sleep a stopování jak dlouho trvají operace
 import visa       # import pyVISA
 
 # ruční nastavení VISA knihovny (často není nutné)
-#rm = visa.ResourceManager('C:\WINDOWS\SysWOW64\\visa32.dll')
-rm = visa.ResourceManager()
+rm = visa.ResourceManager('C:\WINDOWS\SysWOW64\\visa32.dll')
+#rm = visa.ResourceManager()
 
 
 #print(rm.list_resources())       # print seznamu připojených zařízení
@@ -30,7 +30,7 @@ sw_min = str(100e-12)      # minimum sweepu (od jaké hondoty)
 sw_max = str(1e-12)    # maximum sweepu (po jakou hodnotu)
 
 inst.write("F1,0X")                # Source I, measure V, DC
-inst.write("B"+sw_min+",0,20X")   
+inst.write("B"+sw_min+",0,20X")
 inst.write("N1X")
 inst.write("H0X")
 time.sleep(15)
