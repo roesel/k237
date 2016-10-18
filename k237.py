@@ -36,7 +36,7 @@ class Instrument:
 
     def set_log_sweep(self, s_min, s_max, points=1, range=0, delay=20):
         ''' Nastaví sweep na přístroji, opět půjde vylepšit na chytřejší. '''
-        inst.write('Q2,'+str(s_min)+","+str(s_max)+","+str(points)+','+str(range)+','+str(delay)+'X')
+        self.inst.write('Q2,'+str(s_min)+","+str(s_max)+","+str(points)+','+str(range)+','+str(delay)+'X')
 
     def trigger(self):
         self.inst.write('H0X')
