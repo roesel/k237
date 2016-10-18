@@ -34,6 +34,10 @@ class Instrument:
             print('Připojuji se k zařízení...')
         self.inst = rm.open_resource(resource_address)
 
+    def set_log_sweep(self, s_min, s_max, points=1, range=0, delay=20):
+        ''' Nastaví sweep na přístroji, opět půjde vylepšit na chytřejší. '''
+        inst.write('Q2,'+str(s_min)+","+str(s_max)+","+str(points)+','+str(range)+','+str(delay)+'X')
+
     def set_source_and_function(self, source, function):
         # Nastavení zdroje napětí/proudu
         if source.upper() == 'V':
