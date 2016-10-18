@@ -38,6 +38,9 @@ class Instrument:
         ''' Nastaví sweep na přístroji, opět půjde vylepšit na chytřejší. '''
         inst.write('Q2,'+str(s_min)+","+str(s_max)+","+str(points)+','+str(range)+','+str(delay)+'X')
 
+    def trigger(self):
+        self.inst.write('H0X')
+
     def set_source_and_function(self, source, function):
         # Nastavení zdroje napětí/proudu
         if source.upper() == 'V':
