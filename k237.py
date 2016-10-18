@@ -36,9 +36,9 @@ class Instrument:
 
     def set_source_and_function(self, source, function):
         # Nastavení zdroje napětí/proudu
-        if source == 'V':
+        if source.upper() == 'V':
             source_num = '0'
-        elif source == 'I':
+        elif source.upper() == 'I':
             source_num = '1'
         else:
             raise ValueError('Invalid source specified. Valid options: V, I.')
@@ -51,5 +51,14 @@ class Instrument:
         else:
             raise ValueError('Invalid function specified. Valid options: DC, Sweep.')
 
+        if verbose:
+            print('K237 bude zdroj '+source.upper()+' a měříme v módu '+function.upper()+'.')
+
         # Odesílání nastavení zařízení
         self.inst('F'+source_num+','+function_num+'X')
+
+    def set_data_format(self, items=5, form=2, lines=2):
+        ''' Nastavuje formát, ale zatím není moc chytrá a vlastně nevím, jak ji
+            chci udělat.
+        '''
+        self.inst('G'+str(items)+','+str(form)+','+str(lines)+'X')
