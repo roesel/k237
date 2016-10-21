@@ -15,6 +15,10 @@ from matplotlib.backends.backend_qt5agg import (
 
 # TODO - probublávání errorů při běhu programu výš (abych je viděl)
 # TODO - hodně čudlíkovejch paramterů...
+# TODO - export - přidat hlavičku datům podle sloupců
+# TODO - export - vymyslet jak oddělovat jednotlive VA charakteristiky v jednom souboru
+# TODO - interface - blokovat prvky co nemají být aktivní
+# TODO - lineární sweep?
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)

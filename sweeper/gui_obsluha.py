@@ -19,15 +19,16 @@ from matplotlib.backends.backend_qt5agg import (
 
 class GuiProgram(Ui_sweepergui):
 
-    instrument_configured = False
-    pocet_bodu = 0
+    cols = 0
+    sweep_id = 0
+    full_data = []
 
     def __init__(self, dialog):
         Ui_sweepergui.__init__(self)
         self.setupUi(dialog)
 
         # Connect "add" button with a custom function (addInputTextToListbox)
-        #self.addBtn.clicked.connect(self.plot_figure)
+        self.exportButton.clicked.connect(self.export_data)
         self.startBtn.clicked.connect(self.startFunc)
 
         # Populate comboBox
@@ -56,7 +57,7 @@ class GuiProgram(Ui_sweepergui):
         ax1f1 = fig1.add_subplot(111)
         ax1f1.set_xlabel('I [A]')
         ax1f1.set_ylabel('U [V]')
-        ax1f1.set_title('Sweep @ '+str(datetime.datetime.now()))
+        ax1f1.set_title('Sweep @ '+str(self.sweep_id))
         for d in data:
             x, y = d
             ax1f1.semilogx(x, y, color='red')
@@ -83,8 +84,8 @@ class GuiProgram(Ui_sweepergui):
 
     def startFunc(self):
         # Parametry sweepu, časem načíst z GUI
-        #sw_min = str(100e-12)      # minimum sweepu (od jaké hondoty)
-        #sw_max = str(1e-12)        # maximum sweepu (po jakou hodnotu)
+        self.sweep_id = datetime.datetime.now()
+
         sw_min = str(self.startEdit.text())
         sw_max = str(self.endEdit.text())
         delay = str(self.delaySpinBox.value())
@@ -95,20 +96,38 @@ class GuiProgram(Ui_sweepergui):
         self.bigProgBar.setMaximum(n)
         self.littleProgBar.setValue(0)
 
+        col_source = self.sourceCheckBox.checkState()
+        col_delay = self.delayCheckBox.checkState()
+        col_measure = self.measureCheckBox.checkState()
+        col_time = self.timeCheckBox.checkState()
+
+        self.cols = 0
+        if col_source:
+            self.cols += 1
+        if col_delay:
+            self.cols += 2
+        if col_measure:
+            self.cols += 4
+        if col_time:
+            self.cols += 8
+
         # Úvodní stabilizace
         stabilize_time = self.stableSpinBox.value()
         self.stabilize(sw_min, stabilize_time)
 
         # Nastavení sweepu
         self.inst.set_source_and_function('I', 'Sweep')
-        self.inst.write("G5,2,2X")
+
+        self.inst.write("G"+str(self.cols)+",2,2X")
         self.inst.write("Q2,"+sw_min+","+sw_max+","+decade+",0,"+delay+"X")
 
         data = []
+        self.full_data = []
         n_hotovych_mereni = 0
         for mereni in range(n):
-            sweep_results = misc.nice_format(self.run_sweep())
-            data.append(misc.unpack(sweep_results))
+            sweep_results = misc.nice_format(self.run_sweep(), cols=self.cols)
+            data.append(misc.unpack(sweep_results, cols=self.cols))
+            self.full_data.append(sweep_results)
             n_hotovych_mereni += 1
             self.bigProgBar.setValue(n_hotovych_mereni)
 
@@ -158,3 +177,11 @@ class GuiProgram(Ui_sweepergui):
         self.inst.operate(True)
         self.inst.trigger()
         self.artSleep(stabilize_time)
+
+    def export_data(self):
+        with open("sweep_data.txt", "a") as text_file:
+            text_file.write('======== '+str(self.sweep_id)+' ========'+'\n')
+            for data in self.full_data:
+                text_file.write('======== SWEEP START ========\n')
+                text_file.write(data)
+                text_file.write('======== SWEEP END ========\n\n')
