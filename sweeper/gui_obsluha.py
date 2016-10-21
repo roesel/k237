@@ -130,6 +130,7 @@ class GuiProgram(Ui_sweepergui):
             self.full_data.append(sweep_results)
             n_hotovych_mereni += 1
             self.bigProgBar.setValue(n_hotovych_mereni)
+            self.plot_data(data)
 
         self.inst.operate(False)
         self.plot_data(data)
