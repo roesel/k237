@@ -163,8 +163,11 @@ class GuiProgram(Ui_sweepergui):
                 sweep_done = True
             else:
                 status_edit = status.replace('\r', '').replace('\n', '')
-                progress = int(status_edit[-4:])
-                self.littleProgBar.setValue(int(progress/sweep_defined_size*100))
+                try:
+                    progress = int(status_edit[-4:])
+                    self.littleProgBar.setValue(int(progress/sweep_defined_size*100))
+                except:
+                    print('Invalid progress!')
         print('Done.')
         self.littleProgBar.setValue(100)
         print('Sleeping for 3s...')
