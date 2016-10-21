@@ -83,12 +83,18 @@ class GuiProgram(Ui_sweepergui):
         sw_max = str(self.endEdit.text())
         delay = str(self.delaySpinBox.value())
         decade = str(self.decadeComboBox.currentIndex())
-        print(decade)
+
+
 
         n = self.pocetMereniBox.value()
 
+        self.bigProgBar.setValue(0)
+        self.bigProgBar.setMaximum(n)
+        self.littleProgBar.setValue(0)
+
         # Úvodní stabilizace
-        self.stabilize(sw_min)
+        stabilize_time = self.stableSpinBox.value()
+        self.stabilize(sw_min, stabilize_time)
 
         # Nastavení sweepu
         self.inst.set_source_and_function('I', 'Sweep')
@@ -96,10 +102,13 @@ class GuiProgram(Ui_sweepergui):
         self.inst.write("Q2,"+sw_min+","+sw_max+","+decade+",0,"+delay+"X")
 
         data = []
+        n_hotovych_mereni = 0
         for mereni in range(n):
             sweep_results = misc.nice_format(self.run_sweep())
             #self.outTextEdit.insertPlainText(sweep_results+'\n')
             data.append(misc.unpack(sweep_results))
+            n_hotovych_mereni += 1
+            self.bigProgBar.setValue(n_hotovych_mereni)
 
         self.inst.operate(False)
         self.plot_data(data)
@@ -113,30 +122,37 @@ class GuiProgram(Ui_sweepergui):
 
             Vrací string se všemi hodnotami sweepu.
         '''
-        print('\nRunning sweep...')
+        print('\nSpoustim sweep...')
         self.inst.write("U8X")
         out = self.inst.read()
-        print(out)
+        print('U8X -> '+out)
         out = out.replace('\r', '').replace('\n', '')
         sweep_defined_size = int(out[-4:])
         print('Pocet bodu ve sweepu: '+str(sweep_defined_size))
 
+        self.littleProgBar.setValue(0)
         self.inst.trigger()     # Immediate trigger
         sweep_done = False
         while not sweep_done:
             time.sleep(0.1)
             self.inst.write("U11X")
-            if (self.inst.read()=='SMS'+str(sweep_defined_size).zfill(4)+'\r\n'):
+            status = self.inst.read()
+            if (status == 'SMS'+str(sweep_defined_size).zfill(4)+'\r\n'):
                 sweep_done = True
+            else:
+                status_edit = status.replace('\r', '').replace('\n', '')
+                progress = int(status_edit[-4:])
+                self.littleProgBar.setValue(int(progress/sweep_defined_size*100))
         print('Done.')
+        self.littleProgBar.setValue(100)
         print('Sleeping for 3s...')
         time.sleep(3)
         return self.inst.read()
 
-    def stabilize(self, bias):
+    def stabilize(self, bias, stabilize_time):
         # Počáteční stabilizace
         self.inst.set_source_and_function('I', 'DC')
         self.inst.write("B"+bias+",0,20X")
         self.inst.operate(True)
         self.inst.trigger()
-        time.sleep(5)
+        time.sleep(stabilize_time)

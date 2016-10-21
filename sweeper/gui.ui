@@ -20,21 +20,34 @@
    <string>Sweeper</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="5" column="1" colspan="2">
-    <widget class="QProgressBar" name="progressBar">
+   <item row="7" column="1" colspan="2">
+    <widget class="QProgressBar" name="bigProgBar">
+     <property name="maximum">
+      <number>1</number>
+     </property>
      <property name="value">
-      <number>24</number>
+      <number>0</number>
+     </property>
+     <property name="format">
+      <string>%v/%m</string>
      </property>
     </widget>
    </item>
-   <item row="6" column="2">
+   <item row="4" column="1">
+    <widget class="QLabel" name="label_9">
+     <property name="text">
+      <string>Aktuální sweep:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="2">
     <widget class="QPushButton" name="pushButton">
      <property name="text">
       <string>Stop</string>
      </property>
     </widget>
    </item>
-   <item row="0" column="0" rowspan="7">
+   <item row="0" column="0" rowspan="9">
     <widget class="QWidget" name="mplwindow" native="true">
      <property name="minimumSize">
       <size>
@@ -197,7 +210,7 @@
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_2">
          <item>
-          <widget class="QCheckBox" name="checkBox_4">
+          <widget class="QCheckBox" name="sourceCheckBox">
            <property name="enabled">
             <bool>false</bool>
            </property>
@@ -213,7 +226,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QCheckBox" name="checkBox_3">
+          <widget class="QCheckBox" name="measureCheckBox">
            <property name="enabled">
             <bool>false</bool>
            </property>
@@ -226,14 +239,14 @@
           </widget>
          </item>
          <item>
-          <widget class="QCheckBox" name="checkBox_2">
+          <widget class="QCheckBox" name="delayCheckBox">
            <property name="text">
             <string>Delay</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QCheckBox" name="checkBox">
+          <widget class="QCheckBox" name="timeCheckBox">
            <property name="text">
             <string>Time</string>
            </property>
@@ -250,26 +263,36 @@
        </widget>
       </item>
       <item row="2" column="1">
-       <widget class="QSpinBox" name="spinBox_2">
+       <widget class="QSpinBox" name="stableSpinBox">
         <property name="maximum">
          <number>30</number>
+        </property>
+        <property name="value">
+         <number>5</number>
         </property>
        </widget>
       </item>
      </layout>
     </widget>
    </item>
-   <item row="6" column="1">
+   <item row="5" column="1" colspan="2">
+    <widget class="QProgressBar" name="littleProgBar">
+     <property name="value">
+      <number>0</number>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="1">
     <widget class="QPushButton" name="startBtn">
      <property name="text">
       <string>Start</string>
      </property>
     </widget>
    </item>
-   <item row="4" column="1" colspan="2">
-    <widget class="QProgressBar" name="progressBar_2">
-     <property name="value">
-      <number>24</number>
+   <item row="6" column="1">
+    <widget class="QLabel" name="label_10">
+     <property name="text">
+      <string>Všechny sweepy:</string>
      </property>
     </widget>
    </item>
