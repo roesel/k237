@@ -38,6 +38,12 @@ class GuiProgram(Ui_sweepergui):
         # Připojení k instrumentu
         self.inst = Instrument('GPIB0::17::INSTR', visa_location='C:\WINDOWS\SysWOW64\\visa32.dll')
 
+    def artSleep(self, sleepTime):
+        stop_time = QtCore.QTime()
+        stop_time.restart()
+        while stop_time.elapsed() < sleepTime:
+            QtWidgets.QApplication.processEvents(QtCore.QEventLoop.AllEvents, 50)
+
     def plot_figure(self):
         fig1 = Figure()
         ax1f1 = fig1.add_subplot(111)
@@ -83,9 +89,6 @@ class GuiProgram(Ui_sweepergui):
         sw_max = str(self.endEdit.text())
         delay = str(self.delaySpinBox.value())
         decade = str(self.decadeComboBox.currentIndex())
-
-
-
         n = self.pocetMereniBox.value()
 
         self.bigProgBar.setValue(0)
@@ -105,7 +108,6 @@ class GuiProgram(Ui_sweepergui):
         n_hotovych_mereni = 0
         for mereni in range(n):
             sweep_results = misc.nice_format(self.run_sweep())
-            #self.outTextEdit.insertPlainText(sweep_results+'\n')
             data.append(misc.unpack(sweep_results))
             n_hotovych_mereni += 1
             self.bigProgBar.setValue(n_hotovych_mereni)
@@ -134,7 +136,7 @@ class GuiProgram(Ui_sweepergui):
         self.inst.trigger()     # Immediate trigger
         sweep_done = False
         while not sweep_done:
-            time.sleep(0.1)
+            self.artSleep(0.2)
             self.inst.write("U11X")
             status = self.inst.read()
             if (status == 'SMS'+str(sweep_defined_size).zfill(4)+'\r\n'):
@@ -146,7 +148,7 @@ class GuiProgram(Ui_sweepergui):
         print('Done.')
         self.littleProgBar.setValue(100)
         print('Sleeping for 3s...')
-        time.sleep(3)
+        self.artSleep(3)
         return self.inst.read()
 
     def stabilize(self, bias, stabilize_time):
@@ -155,4 +157,4 @@ class GuiProgram(Ui_sweepergui):
         self.inst.write("B"+bias+",0,20X")
         self.inst.operate(True)
         self.inst.trigger()
-        time.sleep(stabilize_time)
+        self.artSleep(stabilize_time)
