@@ -65,7 +65,7 @@
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QLineEdit" name="lineEdit">
+       <widget class="QLineEdit" name="startEdit">
         <property name="text">
          <string>1e-10</string>
         </property>
@@ -79,7 +79,7 @@
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QLineEdit" name="lineEdit_2">
+       <widget class="QLineEdit" name="endEdit">
         <property name="text">
          <string>1e-12</string>
         </property>
@@ -93,9 +93,12 @@
        </widget>
       </item>
       <item row="2" column="1">
-       <widget class="QSpinBox" name="spinBox">
+       <widget class="QSpinBox" name="delaySpinBox">
         <property name="maximum">
          <number>65000</number>
+        </property>
+        <property name="value">
+         <number>10</number>
         </property>
        </widget>
       </item>
@@ -107,7 +110,7 @@
        </widget>
       </item>
       <item row="3" column="1">
-       <widget class="QComboBox" name="comboBox"/>
+       <widget class="QComboBox" name="decadeComboBox"/>
       </item>
       <item row="4" column="0">
        <widget class="QLabel" name="label">
@@ -123,7 +126,7 @@
         </property>
         <layout class="QVBoxLayout" name="verticalLayout">
          <item>
-          <widget class="QRadioButton" name="radioButton_2">
+          <widget class="QRadioButton" name="logRadioButton">
            <property name="text">
             <string>Logaritmický</string>
            </property>
