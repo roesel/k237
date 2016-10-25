@@ -20,6 +20,7 @@ from matplotlib.backends.backend_qt5agg import (
 # TODO - interface - blokovat prvky co nemají být aktivní
 # TODO - lineární sweep?
 # TODO - přesunout printy jen pod "debug" flag v Instrument objektu
+# TODO - cleanup (vypnutí operate etc) při erroru programu
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)

@@ -22,6 +22,8 @@ class GuiProgram(Ui_sweepergui):
     cols = 0
     sweep_id = 0
     full_data = []
+    negative_current = False
+    log_sweep = True
 
     def __init__(self, dialog):
         Ui_sweepergui.__init__(self)
@@ -30,6 +32,8 @@ class GuiProgram(Ui_sweepergui):
         # Connect "add" button with a custom function (addInputTextToListbox)
         self.exportButton.clicked.connect(self.export_data)
         self.startBtn.clicked.connect(self.startFunc)
+        self.logRadioButton.clicked.connect(self.switch_linear)
+        self.linRadioButton.clicked.connect(self.switch_linear)
 
         # Populate comboBox
         self.decadeComboBox.clear()
@@ -60,13 +64,13 @@ class GuiProgram(Ui_sweepergui):
         ax1f1.set_title('Sweep @ '+str(self.sweep_id))
         for d in data:
             x, y = d
-            ax1f1.semilogx(x, y, color='red')
+            ax1f1.plot(x, y, color='red')
+            if self.log_sweep:
+                ax1f1.set_xscale('log')
+            else:
+                ax1f1.set_xscale('linear')
         self.rmmpl()
         self.addmpl(fig1)
-
-    # def addInputTextToListbox(self):
-    #     txt = self.myTextInput.text()
-    #     self.mplfigs.addItem(txt)
 
     def addmpl(self, fig):
         self.canvas = FigureCanvas(fig)
@@ -82,12 +86,30 @@ class GuiProgram(Ui_sweepergui):
         self.mplvl.removeWidget(self.toolbar)
         self.toolbar.close()
 
+    def validateInput(self, sw_min, sw_max, decade, delay, log_sweep, step):
+        if log_sweep:
+            if (float(sw_min)>0 and
+                float(sw_max)>0 and
+                float(sw_min) != float(sw_max) ):
+                return True
+            else:
+                return False
+        else:
+            #lin sweep
+            if (float(sw_min) != float(sw_max) and
+                abs(float(sw_max)-float(sw_min)) > float(step) ):
+                return True
+            else:
+                return False
+
     def startFunc(self):
-        # Parametry sweepu, časem načíst z GUI
+        ''' Posbírá z GUI parametry a odpovídajícím způsobem přeloží.'''
+        # aktuální čas pro ID
         self.sweep_id = datetime.datetime.now()
 
         sw_min = str(self.startEdit.text())
         sw_max = str(self.endEdit.text())
+        step = str(self.stepEdit.text())
         delay = str(self.delaySpinBox.value())
         decade = str(self.decadeComboBox.currentIndex())
         n = self.pocetMereniBox.value()
@@ -95,6 +117,10 @@ class GuiProgram(Ui_sweepergui):
         self.bigProgBar.setValue(0)
         self.bigProgBar.setMaximum(n)
         self.littleProgBar.setValue(0)
+
+        log_sweep = self.logRadioButton.isChecked()
+        lin_sweep = self.linRadioButton.isChecked()
+        self.log_sweep = log_sweep
 
         col_source = self.sourceCheckBox.checkState()
         col_delay = self.delayCheckBox.checkState()
@@ -111,15 +137,29 @@ class GuiProgram(Ui_sweepergui):
         if col_time:
             self.cols += 8
 
+        if self.validateInput(sw_min, sw_max, decade, delay, log_sweep, step):
+            self.measure(sw_min, sw_max, decade, delay, log_sweep, step, n)
+        else:
+            print('Input failed validation.')
+
+    def measure(self, sw_min, sw_max, decade, delay, log_sweep, step, n):
+        ''' Spustí měření s již validovanými parametry. '''
+        # Disable UI
+        self.enable_ui(False)
+
         # Úvodní stabilizace
         stabilize_time = self.stableSpinBox.value()
         self.stabilize(sw_min, stabilize_time)
 
         # Nastavení sweepu
         self.inst.set_source_and_function('I', 'Sweep')
-
+        # Nastavení formátu dat
         self.inst.write("G"+str(self.cols)+",2,2X")
-        self.inst.write("Q2,"+sw_min+","+sw_max+","+decade+",0,"+delay+"X")
+
+        if self.log_sweep:
+            self.inst.write("Q2,"+sw_min+","+sw_max+","+decade+",0,"+delay+"X")
+        else:
+            self.inst.write("Q1,"+sw_min+","+sw_max+","+step+",0,"+delay+"X")
 
         data = []
         self.full_data = []
@@ -133,14 +173,13 @@ class GuiProgram(Ui_sweepergui):
             self.plot_data(data)
 
         self.inst.operate(False)
+        self.enable_ui(True)
         self.plot_data(data)
 
 
     def run_sweep(self):
         ''' Provede jeden sweep, který už musí být definovaný ve stroji.
             Na konci 3 vteřiny spí, aby se mělo napětí čas ustálit před dalším měřením.
-            POZOR: Podmínka na ukončení while-cyklu je natvrdo "21 měření". Pokud
-            se změní nastavení sweepu (Q...X), tak může skončit dřív a nebo neskončit vůbec.
 
             Vrací string se všemi hodnotami sweepu.
         '''
@@ -181,6 +220,41 @@ class GuiProgram(Ui_sweepergui):
         self.inst.operate(True)
         self.inst.trigger()
         self.artSleep(stabilize_time)
+
+    def switch_linear(self):
+        log_sweep = self.logRadioButton.isChecked()
+        lin_sweep = self.linRadioButton.isChecked()
+        if log_sweep:
+            self.stepEdit.setEnabled(False)
+            self.decadeComboBox.setEnabled(True)
+        else:
+            self.decadeComboBox.setEnabled(False)
+            self.stepEdit.setEnabled(True)
+
+    def enable_ui(self, status):
+        ui_elements = [
+                self.startEdit,
+                self.endEdit,
+                self.stepEdit,
+                self.delaySpinBox,
+                self.decadeComboBox,
+                self.pocetMereniBox,
+                self.logRadioButton,
+                self.linRadioButton,
+                self.sourceCheckBox,
+                self.delayCheckBox,
+                self.measureCheckBox,
+                self.timeCheckBox,
+                self.stableSpinBox,
+        ]
+
+        for element in ui_elements:
+            element.setEnabled(status)
+
+        if status:
+            self.switch_linear()
+
+
 
     def export_data(self):
         with open("sweep_data.txt", "a") as text_file:
