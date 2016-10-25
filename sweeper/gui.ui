@@ -19,6 +19,10 @@
   <property name="windowTitle">
    <string>Sweeper</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>img/logo_crop.png</normaloff>img/logo_crop.png</iconset>
+  </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="7" column="1" colspan="2">
     <widget class="QProgressBar" name="bigProgBar">
@@ -170,6 +174,9 @@
       </item>
       <item row="2" column="1">
        <widget class="QLineEdit" name="stepEdit">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="text">
          <string>1e-12</string>
         </property>
