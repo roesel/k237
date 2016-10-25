@@ -141,6 +141,17 @@ class GuiProgram(Ui_sweepergui):
             self.measure(sw_min, sw_max, decade, delay, log_sweep, step, n)
         else:
             print('Input failed validation.')
+            self.show_notification('failed_validation')
+
+    def show_notification(self, code):
+        if code == 'failed_validation':
+            msg = QtWidgets.QMessageBox()
+            msg.setIcon(QtWidgets.QMessageBox.Warning)
+            msg.setText("Chybné parametry sweepu.")
+            msg.setInformativeText("")
+            msg.setWindowTitle("Sweeper - varování")
+            msg.setDetailedText("TODO")
+            msg.exec_()
 
     def measure(self, sw_min, sw_max, decade, delay, log_sweep, step, n):
         ''' Spustí měření s již validovanými parametry. '''
