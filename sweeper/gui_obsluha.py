@@ -87,6 +87,16 @@ class GuiProgram(Ui_sweepergui):
         self.toolbar.close()
 
     def validateInput(self, sw_min, sw_max, decade, delay, log_sweep, step):
+        # Unit testing :P
+        try:
+            a = float(sw_min)
+            a = float(sw_max)
+            if not log_sweep:
+                a = float(step)
+        except:
+            return False
+
+        # Code
         if log_sweep:
             if (float(sw_min)>0 and
                 float(sw_max)>0 and
