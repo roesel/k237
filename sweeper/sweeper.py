@@ -23,6 +23,7 @@ from matplotlib.backends.backend_qt5agg import (
 # TODO - cleanup (vypnutí operate etc) při erroru programu
 # TODO - Export - multiple sweeps in multiple columns etc?
 # TODO - Disable export if nothing measured
+# TODO - Ošetřit cancel Export dialogu tak aby nespadnul program
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
