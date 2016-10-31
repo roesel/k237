@@ -41,7 +41,8 @@ class GuiProgram(Ui_sweepergui):
         self.decadeComboBox.setCurrentIndex(1)
 
         # Připojení k instrumentu
-        self.inst = Instrument('GPIB0::17::INSTR', visa_location='C:\WINDOWS\SysWOW64\\visa32.dll')
+        #self.inst = Instrument('GPIB0::17::INSTR', visa_location='C:\WINDOWS\SysWOW64\\visa32.dll')
+        self.inst = Instrument('GPIB0::17::INSTR')
 
     def artSleep(self, sleepTime):
         stop_time = QtCore.QTime()
@@ -168,6 +169,9 @@ class GuiProgram(Ui_sweepergui):
         # Disable UI
         self.enable_ui(False)
 
+        # Declare Export not done on this sweep
+        self.exportButton.setText('Export')
+
         # Úvodní stabilizace
         stabilize_time = self.stableSpinBox.value()
         self.stabilize(sw_min, stabilize_time)
@@ -278,9 +282,26 @@ class GuiProgram(Ui_sweepergui):
 
 
     def export_data(self):
-        with open("sweep_data.txt", "a") as text_file:
-            text_file.write('======== '+str(self.sweep_id)+' ========'+'\n')
+        # Qt Dialog na výběr souboru k uložení
+        save_file_name, _ = QtWidgets.QFileDialog.getSaveFileName(
+            None,
+            'Exportovat výsledky měření',
+            'C:\Repa\k237\data\sweep_'+str(self.sweep_id)+'.txt',
+            'Text Files (*.txt);;All Files (*)'
+        )
+
+        # Vlastní uložení souboru
+        with open(save_file_name, "w") as text_file:
+            text_file.write('# ======== Sweep ID: '+str(self.sweep_id)+' ========'+'\n')
+            text_file.write(
+                '# ======== '+
+                str(len(self.full_data))+' sweeps'+
+                ' ========'+'\n')
+
             for data in self.full_data:
                 text_file.write('======== SWEEP START ========\n')
-                text_file.write(data)
+                text_file.write(data.replace(',', '    '))
                 text_file.write('======== SWEEP END ========\n\n')
+
+        # Update GUI
+        self.exportButton.setText('Export ✔')
