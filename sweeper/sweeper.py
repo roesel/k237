@@ -13,14 +13,16 @@ from matplotlib.backends.backend_qt5agg import (
     FigureCanvasQTAgg as FigureCanvas,
     NavigationToolbar2QT as NavigationToolbar)
 
-# TODO - probublávání errorů při běhu programu výš (abych je viděl)
+# DONE - probublávání errorů při běhu programu výš (abych je viděl)
 # TODO - hodně čudlíkovejch paramterů...
 # TODO - export - přidat hlavičku datům podle sloupců
 # TODO - export - vymyslet jak oddělovat jednotlive VA charakteristiky v jednom souboru
 # TODO - interface - blokovat prvky co nemají být aktivní
-# TODO - lineární sweep?
+# DONE - lineární sweep?
 # TODO - přesunout printy jen pod "debug" flag v Instrument objektu
 # TODO - cleanup (vypnutí operate etc) při erroru programu
+# TODO - Export - multiple sweeps in multiple columns etc?
+# TODO - Disable export if nothing measured
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
