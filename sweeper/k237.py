@@ -54,7 +54,7 @@ class Instrument:
 
     def set_source_and_function(self, source, function):
         # Nastavení zdroje napětí/proudu
-        if source.upper() == 'V':
+        if source.upper() == 'U':
             source_num = '0'
         elif source.upper() == 'I':
             source_num = '1'
