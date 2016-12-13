@@ -1,14 +1,16 @@
 import sys
-from PyQt4 import QtGui, QtCore
+from PyQt5 import QtGui, QtCore, QtWidgets
+from sensor import Sensor
 
 
-class SystemTrayIcon(QtGui.QSystemTrayIcon):
+class SystemTrayIcon(QtWidgets.QSystemTrayIcon):
+    s1_freq = 5  # [s]
 
     def __init__(self, icon, parent=None):
-        QtGui.QSystemTrayIcon.__init__(self, icon, parent)
-        menu = QtGui.QMenu(parent)
+        QtWidgets.QSystemTrayIcon.__init__(self, icon, parent)
+        menu = QtWidgets.QMenu(parent)
 
-        submenu = QtGui.QMenu(menu)
+        submenu = QtWidgets.QMenu(menu)
         submenu.setTitle("Sensor 1")
         s1_5s = submenu.addAction("Every 5 s")
         s1_10s = submenu.addAction("Every 10 s")
@@ -16,14 +18,23 @@ class SystemTrayIcon(QtGui.QSystemTrayIcon):
 
         exitAction = menu.addAction("Exit")
         self.setContextMenu(menu)
-        QtCore.QObject.connect(exitAction, QtCore.SIGNAL('triggered()'), self.exit)
 
-        QtCore.QObject.connect(s1_5s, QtCore.SIGNAL('triggered()'),
-                               lambda period=5: self.set_period(period))
-        QtCore.QObject.connect(s1_10s, QtCore.SIGNAL('triggered()'),
-                               lambda period=10: self.set_period(period))
+        s1_5s.triggered.connect(lambda period=5: self.set_period(period))
+        s1_10s.triggered.connect(lambda period=10: self.set_period(period))
+        exitAction.triggered.connect(self.exit)
 
         print("Tray icon set up.")
+
+        self.s1 = Sensor("COM8")
+
+        # self.run()
+
+    def run(self):
+        while True:
+            print("Sleeping for {} seconds.".format(self.s1_freq))
+            self.artSleep(self.s1_freq * 1000)
+            reading = self.s1.read()
+            print(reading)
 
     def artSleep(self, sleepTime):
         stop_time = QtCore.QTime()
@@ -39,9 +50,9 @@ class SystemTrayIcon(QtGui.QSystemTrayIcon):
 
 
 def main():
-    app = QtGui.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
 
-    w = QtGui.QWidget()
+    w = QtWidgets.QWidget()
     trayIcon = SystemTrayIcon(QtGui.QIcon("Logger.png"), w)
 
     trayIcon.show()
