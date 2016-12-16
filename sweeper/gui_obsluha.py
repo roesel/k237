@@ -45,9 +45,13 @@ class GuiProgram(Ui_sweepergui):
         #self.inst = Instrument('GPIB0::17::INSTR', virtual=True)
 
     def artSleep(self, sleepTime):
+        """
+        Čeká čas sleepTime v eskundách, zatím ale každých 50 milisekund řeší
+        akce, o které se někdo pokoušel v GUI.
+        """
         stop_time = QtCore.QTime()
         stop_time.restart()
-        while stop_time.elapsed() < sleepTime:
+        while stop_time.elapsed() < sleepTime * 1000:
             QtWidgets.QApplication.processEvents(QtCore.QEventLoop.AllEvents, 50)
 
     def plot_figure(self):
