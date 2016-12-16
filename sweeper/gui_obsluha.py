@@ -284,26 +284,38 @@ class GuiProgram(Ui_sweepergui):
             self.switch_linear()
 
     def export_data(self):
+        """
+        Exportuje data pomocí ukládacího dialogu Qt. V případě chybného zadání
+        souboru nic neudělá a potěžuje si do konzole.
+        """
+        proposed_name = str(self.sweep_id).replace(" ", "_").replace(":", ".")
+
         # Qt Dialog na výběr souboru k uložení
         save_file_name, _ = QtWidgets.QFileDialog.getSaveFileName(
             None,
             'Exportovat výsledky měření',
-            'C:\Repa\k237\data\sweep_' + str(self.sweep_id) + '.txt',
+            'C:\Repa\k237\data\sweep_' + proposed_name + '.txt',
             'Text Files (*.txt);;All Files (*)'
         )
 
         # Vlastní uložení souboru
-        with open(save_file_name, "w") as text_file:
-            text_file.write('# ======== Sweep ID: ' + str(self.sweep_id) + ' ========' + '\n')
-            text_file.write(
-                '# ======== ' +
-                str(len(self.full_data)) + ' sweeps' +
-                ' ========' + '\n')
+        try:
+            with open(save_file_name, "w") as text_file:
+                text_file.write('# ======== Sweep ID: ' + str(self.sweep_id) + ' ========' + '\n')
+                text_file.write(
+                    '# ======== ' +
+                    str(len(self.full_data)) + ' sweeps' +
+                    ' ========' + '\n')
 
-            for data in self.full_data:
-                text_file.write('======== SWEEP START ========\n')
-                text_file.write(data.replace(',', '    '))
-                text_file.write('======== SWEEP END ========\n\n')
+                for data in self.full_data:
+                    text_file.write('# ======== SWEEP START ========\n')
+                    text_file.write(data.replace(',', '    '))
+                    text_file.write('# ======== SWEEP END ========\n\n')
 
-        # Update GUI
-        self.exportButton.setText('Export ✔')
+            # Update GUI
+            self.exportButton.setText('Export ✔')
+        except:
+            print("Export neúspěšný. Data pravděpodobně nejsou uložena!")
+
+            # Update GUI
+            self.exportButton.setText('Export ✗')
