@@ -44,6 +44,9 @@ class Virtual_SMU:
         elif in_command[0:4] == "U11X":
             self.increase_sweep_counter()
             self.stack = 'SMS' + str(self.sweep_n).zfill(4) + '\r\n'
+        elif in_command[0:3] == "N0X":
+            self.sweep_n = 0
+            self.sweep_len = 0
 
     def increase_sweep_counter(self):
         x_data = "{:.4E}".format(self.points[self.sweep_n])

@@ -24,6 +24,7 @@ class GuiProgram(Ui_sweepergui):
     full_data = []
     negative_current = False
     log_sweep = True
+    stop = True
 
     def __init__(self, dialog):
         Ui_sweepergui.__init__(self)
@@ -117,8 +118,16 @@ class GuiProgram(Ui_sweepergui):
             else:
                 return False
 
+    def stopFunc(self):
+        print('ABORT! Attempted to STOP sweep!')
+        self.inst.operate(False)
+        self.stop = True
+
     def startFunc(self):
         ''' Posbírá z GUI parametry a odpovídajícím způsobem přeloží.'''
+        # vypnout ruční brzdu
+        self.stop = False
+
         # aktuální čas pro ID
         self.sweep_id = datetime.datetime.now()
 
@@ -194,12 +203,18 @@ class GuiProgram(Ui_sweepergui):
         self.full_data = []
         n_hotovych_mereni = 0
         for mereni in range(n):
-            sweep_results = misc.nice_format(self.run_sweep(), cols=self.cols)
-            data.append(misc.unpack(sweep_results, cols=self.cols))
-            self.full_data.append(sweep_results)
-            n_hotovych_mereni += 1
-            self.bigProgBar.setValue(n_hotovych_mereni)
-            self.plot_data(data)
+            if self.stop:
+                break
+            output = self.run_sweep()
+            if output:
+                sweep_results = misc.nice_format(output, cols=self.cols)
+                data.append(misc.unpack(sweep_results, cols=self.cols))
+                self.full_data.append(sweep_results)
+                n_hotovych_mereni += 1
+                self.bigProgBar.setValue(n_hotovych_mereni)
+                self.plot_data(data)
+            else:
+                print("Output was empty. Interrupted measurement?")
 
         self.inst.operate(False)
         self.enable_ui(True)
@@ -224,6 +239,8 @@ class GuiProgram(Ui_sweepergui):
         self.inst.trigger()     # Immediate trigger
         sweep_done = False
         while not sweep_done:
+            if self.stop:
+                break
             self.artSleep(0.2)
             self.inst.write("U11X")
             status = self.inst.read()
@@ -240,7 +257,10 @@ class GuiProgram(Ui_sweepergui):
         self.littleProgBar.setValue(100)
         print('Sleeping for 3s...')
         self.artSleep(3)
-        return self.inst.read()
+        if self.stop:
+            return ""
+        else:
+            return self.inst.read()
 
     def stabilize(self, bias, stabilize_time):
         # Počáteční stabilizace
@@ -282,6 +302,15 @@ class GuiProgram(Ui_sweepergui):
 
         if status:
             self.switch_linear()
+
+        if status:
+            self.startBtn.clicked.disconnect()
+            self.startBtn.clicked.connect(self.startFunc)
+            self.startBtn.setText("Start")
+        else:
+            self.startBtn.clicked.disconnect()
+            self.startBtn.clicked.connect(self.stopFunc)
+            self.startBtn.setText("Abort")
 
     def export_data(self):
         """
