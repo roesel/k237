@@ -41,8 +41,8 @@ class GuiProgram(Ui_sweepergui):
         self.decadeComboBox.setCurrentIndex(1)
 
         # Připojení k instrumentu
-        #self.inst = Instrument('GPIB0::17::INSTR', visa_location='C:\WINDOWS\SysWOW64\\visa32.dll')
-        self.inst = Instrument('GPIB0::17::INSTR')
+        self.inst = Instrument('GPIB0::17::INSTR', visa_location='C:\WINDOWS\SysWOW64\\visa32.dll')
+        #self.inst = Instrument('GPIB0::17::INSTR', virtual=True)
 
     def artSleep(self, sleepTime):
         stop_time = QtCore.QTime()
@@ -62,7 +62,7 @@ class GuiProgram(Ui_sweepergui):
         ax1f1 = fig1.add_subplot(111)
         ax1f1.set_xlabel('I [A]')
         ax1f1.set_ylabel('U [V]')
-        ax1f1.set_title('Sweep @ '+str(self.sweep_id))
+        ax1f1.set_title('Sweep @ ' + str(self.sweep_id))
         for d in data:
             x, y = d
             ax1f1.plot(x, y, color='red')
@@ -78,7 +78,7 @@ class GuiProgram(Ui_sweepergui):
         self.mplvl.addWidget(self.canvas)
         self.canvas.draw()
         self.toolbar = NavigationToolbar(self.canvas,
-                self.mplwindow, coordinates=True)
+                                         self.mplwindow, coordinates=True)
         self.mplvl.addWidget(self.toolbar)
 
     def rmmpl(self,):
@@ -99,16 +99,16 @@ class GuiProgram(Ui_sweepergui):
 
         # Code
         if log_sweep:
-            if (float(sw_min)>0 and
-                float(sw_max)>0 and
-                float(sw_min) != float(sw_max) ):
+            if (float(sw_min) > 0 and
+                float(sw_max) > 0 and
+                    float(sw_min) != float(sw_max)):
                 return True
             else:
                 return False
         else:
-            #lin sweep
+            # lin sweep
             if (float(sw_min) != float(sw_max) and
-                abs(float(sw_max)-float(sw_min)) > float(step) ):
+                    abs(float(sw_max) - float(sw_min)) > float(step)):
                 return True
             else:
                 return False
@@ -179,12 +179,12 @@ class GuiProgram(Ui_sweepergui):
         # Nastavení sweepu
         self.inst.set_source_and_function('I', 'Sweep')
         # Nastavení formátu dat
-        self.inst.write("G"+str(self.cols)+",2,2X")
+        self.inst.write("G" + str(self.cols) + ",2,2X")
 
         if self.log_sweep:
-            self.inst.write("Q2,"+sw_min+","+sw_max+","+decade+",0,"+delay+"X")
+            self.inst.write("Q2," + sw_min + "," + sw_max + "," + decade + ",0," + delay + "X")
         else:
-            self.inst.write("Q1,"+sw_min+","+sw_max+","+step+",0,"+delay+"X")
+            self.inst.write("Q1," + sw_min + "," + sw_max + "," + step + ",0," + delay + "X")
 
         data = []
         self.full_data = []
@@ -201,7 +201,6 @@ class GuiProgram(Ui_sweepergui):
         self.enable_ui(True)
         self.plot_data(data)
 
-
     def run_sweep(self):
         ''' Provede jeden sweep, který už musí být definovaný ve stroji.
             Na konci 3 vteřiny spí, aby se mělo napětí čas ustálit před dalším měřením.
@@ -211,10 +210,11 @@ class GuiProgram(Ui_sweepergui):
         print('\nSpoustim sweep...')
         self.inst.write("U8X")
         out = self.inst.read()
-        print('U8X -> '+out)
+        print('U8X -> ' + out)
         out = out.replace('\r', '').replace('\n', '')
+        print("Out: {}".format(out))
         sweep_defined_size = int(out[-4:])
-        print('Pocet bodu ve sweepu: '+str(sweep_defined_size))
+        print('Pocet bodu ve sweepu: ' + str(sweep_defined_size))
 
         self.littleProgBar.setValue(0)
         self.inst.trigger()     # Immediate trigger
@@ -223,13 +223,13 @@ class GuiProgram(Ui_sweepergui):
             self.artSleep(0.2)
             self.inst.write("U11X")
             status = self.inst.read()
-            if (status == 'SMS'+str(sweep_defined_size).zfill(4)+'\r\n'):
+            if (status == 'SMS' + str(sweep_defined_size).zfill(4) + '\r\n'):
                 sweep_done = True
             else:
                 status_edit = status.replace('\r', '').replace('\n', '')
                 try:
                     progress = int(status_edit[-4:])
-                    self.littleProgBar.setValue(int(progress/sweep_defined_size*100))
+                    self.littleProgBar.setValue(int(progress / sweep_defined_size * 100))
                 except:
                     print('Invalid progress!')
         print('Done.')
@@ -241,7 +241,7 @@ class GuiProgram(Ui_sweepergui):
     def stabilize(self, bias, stabilize_time):
         # Počáteční stabilizace
         self.inst.set_source_and_function('I', 'DC')
-        self.inst.write("B"+bias+",0,20X")
+        self.inst.write("B" + bias + ",0,20X")
         self.inst.operate(True)
         self.inst.trigger()
         self.artSleep(stabilize_time)
@@ -258,19 +258,19 @@ class GuiProgram(Ui_sweepergui):
 
     def enable_ui(self, status):
         ui_elements = [
-                self.startEdit,
-                self.endEdit,
-                self.stepEdit,
-                self.delaySpinBox,
-                self.decadeComboBox,
-                self.pocetMereniBox,
-                self.logRadioButton,
-                self.linRadioButton,
-                self.sourceCheckBox,
-                self.delayCheckBox,
-                self.measureCheckBox,
-                self.timeCheckBox,
-                self.stableSpinBox,
+            self.startEdit,
+            self.endEdit,
+            self.stepEdit,
+            self.delaySpinBox,
+            self.decadeComboBox,
+            self.pocetMereniBox,
+            self.logRadioButton,
+            self.linRadioButton,
+            self.sourceCheckBox,
+            self.delayCheckBox,
+            self.measureCheckBox,
+            self.timeCheckBox,
+            self.stableSpinBox,
         ]
 
         for element in ui_elements:
@@ -279,24 +279,22 @@ class GuiProgram(Ui_sweepergui):
         if status:
             self.switch_linear()
 
-
-
     def export_data(self):
         # Qt Dialog na výběr souboru k uložení
         save_file_name, _ = QtWidgets.QFileDialog.getSaveFileName(
             None,
             'Exportovat výsledky měření',
-            'C:\Repa\k237\data\sweep_'+str(self.sweep_id)+'.txt',
+            'C:\Repa\k237\data\sweep_' + str(self.sweep_id) + '.txt',
             'Text Files (*.txt);;All Files (*)'
         )
 
         # Vlastní uložení souboru
         with open(save_file_name, "w") as text_file:
-            text_file.write('# ======== Sweep ID: '+str(self.sweep_id)+' ========'+'\n')
+            text_file.write('# ======== Sweep ID: ' + str(self.sweep_id) + ' ========' + '\n')
             text_file.write(
-                '# ======== '+
-                str(len(self.full_data))+' sweeps'+
-                ' ========'+'\n')
+                '# ======== ' +
+                str(len(self.full_data)) + ' sweeps' +
+                ' ========' + '\n')
 
             for data in self.full_data:
                 text_file.write('======== SWEEP START ========\n')

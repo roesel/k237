@@ -1,26 +1,33 @@
 # -*- coding: utf-8 -*-
 import time
 import visa
+from virtual_smu import Virtual_SMU
 
-# TODO - u nastavování parametrů přístroje by mělo jít ověřit, zda se to povedlo a pokud ne, hodit chybu
+# TODO - u nastavování parametrů přístroje by mělo jít ověřit, zda se to
+# povedlo a pokud ne, hodit chybu
+
 
 class Instrument:
     'Třída obsluhující měřící přístroj KEITHLEY 237.'
 
     verbose = True           # Má program blábolit?
     visa_location = ''       # Umístění VISA knihovny
+    virtual = False
     resource_address = ''    # Adresa měřáku (...GPIB::17...)
     SMU = None
 
-    def __init__(self, resource_address, visa_location = False):
+    def __init__(self, resource_address, visa_location=False, virtual=False):
         '''
         Metoda volaná při tvorbě objektu.
         '''
         # Uložení adresy přístroje do vlastní proměnné
         self.resource_address = resource_address
+        self.virtual = virtual
+
         # Pokud v parametrech bylo speciální umístění VISA knihovny, uložit do vlastní proměnné.
         if visa_location:
             self.visa_location = visa_location
+
         # Zahájit komunikaci s přístrojem
         self.initialize_communication()
 
@@ -30,6 +37,7 @@ class Instrument:
         # Nastavení VISA knihovny
         if self.verbose:
             print('Nastavuji VISA knihovnu...')
+
         if self.visa_location:
             rm = visa.ResourceManager(self.visa_location)
         else:
@@ -38,7 +46,11 @@ class Instrument:
         # Připojení k přístroji na konkrétní adrese
         if self.verbose:
             print('Pripojuji se k zarizeni...')
-        self.SMU = rm.open_resource(self.resource_address)
+
+        if not self.virtual:
+            self.SMU = rm.open_resource(self.resource_address)
+        else:
+            self.SMU = Virtual_SMU()
 
         # V tuhle chvíli by mělo být všechno ready na měření.
 
@@ -61,8 +73,7 @@ class Instrument:
         '''
         Přepošle string do metody write našeho SMU.
         '''
-        #self.SMU.write(command)
-        print(command)
+        self.SMU.write(command)
 
     def read(self):
         '''
@@ -91,7 +102,7 @@ class Instrument:
             raise ValueError('Invalid function specified. Valid options: DC, Sweep.')
 
         if self.verbose:
-            print('K237 bude zdroj '+source.upper()+' a merime v modu '+function.upper()+'.')
+            print('K237 bude zdroj ' + source.upper() + ' a merime v modu ' + function.upper() + '.')
 
         # Odesílání nastavení zařízení
-        self.SMU.write('F'+source_num+','+function_num+'X')
+        self.SMU.write('F' + source_num + ',' + function_num + 'X')
