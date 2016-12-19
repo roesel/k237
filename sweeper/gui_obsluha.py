@@ -253,10 +253,10 @@ class GuiProgram(Ui_sweepergui):
                     self.littleProgBar.setValue(int(progress / sweep_defined_size * 100))
                 except:
                     print('Invalid progress!')
-        print('Done.')
+        print('One sweep done.')
         self.littleProgBar.setValue(100)
-        print('Sleeping for 3s...')
-        self.artSleep(3)
+        # print('Sleeping for 0.5 s...')
+        # self.artSleep(0.5)
         if self.stop:
             return ""
         else:
