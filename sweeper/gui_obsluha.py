@@ -187,6 +187,7 @@ class GuiProgram(Ui_sweepergui):
 
         # Úvodní stabilizace
         stabilize_time = self.stableSpinBox.value()
+        print("Uvodni stabilizace v DC modu - {} s.".format(stabilize_time))
         self.stabilize(sw_min, stabilize_time)
 
         # Nastavení sweepu
@@ -260,8 +261,10 @@ class GuiProgram(Ui_sweepergui):
         print('Jeden sweep hotov.')
         self.littleProgBar.setValue(100)
 
-        # print('Sleeping for 0.5 s...')
-        # self.artSleep(0.5)
+        sleep_time = self.sleepSpinBox.value()
+        print("Pauza mezi sweepy - {} s.".format(sleep_time))
+        self.artSleep(sleep_time)
+
         if self.stop:
             return ""
         else:
@@ -300,6 +303,7 @@ class GuiProgram(Ui_sweepergui):
             self.measureCheckBox,
             self.timeCheckBox,
             self.stableSpinBox,
+            self.sleepSpinBox,
         ]
 
         for element in ui_elements:

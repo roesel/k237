@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>900</width>
-    <height>571</height>
+    <height>650</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -102,6 +102,23 @@
         </property>
        </widget>
       </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_11">
+        <property name="text">
+         <string>Step [A]</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QLineEdit" name="stepEdit">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string>1e-12</string>
+        </property>
+       </widget>
+      </item>
       <item row="3" column="0">
        <widget class="QLabel" name="label_5">
         <property name="text">
@@ -128,13 +145,6 @@
       </item>
       <item row="4" column="1">
        <widget class="QComboBox" name="decadeComboBox"/>
-      </item>
-      <item row="5" column="0">
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string>Druh sweepu</string>
-        </property>
-       </widget>
       </item>
       <item row="5" column="1">
        <widget class="QGroupBox" name="groupBox_4">
@@ -165,21 +175,47 @@
         </layout>
        </widget>
       </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="label_11">
+      <item row="5" column="0">
+       <widget class="QLabel" name="label">
         <property name="text">
-         <string>Step [A]</string>
+         <string>Druh Sweepu</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="1">
-       <widget class="QLineEdit" name="stepEdit">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
+      <item row="6" column="0">
+       <widget class="QLabel" name="label_12">
         <property name="text">
-         <string>1e-12</string>
+         <string>Sense</string>
         </property>
+       </widget>
+      </item>
+      <item row="6" column="1">
+       <widget class="QGroupBox" name="groupBox_5">
+        <property name="title">
+         <string/>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_3">
+         <item>
+          <widget class="QRadioButton" name="senseLocalRadioButton">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="text">
+            <string>Local</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QRadioButton" name="senseRemoteRadioButton">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="text">
+            <string>Remote</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </widget>
       </item>
      </layout>
@@ -210,7 +246,7 @@
          <number>1</number>
         </property>
         <property name="maximum">
-         <number>20</number>
+         <number>9999</number>
         </property>
        </widget>
       </item>
@@ -279,17 +315,31 @@
       <item row="2" column="0">
        <widget class="QLabel" name="label_8">
         <property name="text">
-         <string>Stabilizace [s]</string>
+         <string>Úvodní DC mód [s]</string>
         </property>
        </widget>
       </item>
       <item row="2" column="1">
        <widget class="QSpinBox" name="stableSpinBox">
         <property name="maximum">
-         <number>30</number>
+         <number>9999</number>
         </property>
         <property name="value">
          <number>5</number>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QSpinBox" name="sleepSpinBox">
+        <property name="value">
+         <number>3</number>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_13">
+        <property name="text">
+         <string>Stabilizace [s]</string>
         </property>
        </widget>
       </item>
