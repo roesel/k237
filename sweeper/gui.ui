@@ -178,7 +178,7 @@
       <item row="5" column="0">
        <widget class="QLabel" name="label">
         <property name="text">
-         <string>Druh Sweepu</string>
+         <string>Druh sweepu</string>
         </property>
        </widget>
       </item>

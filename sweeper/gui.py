@@ -197,7 +197,7 @@ class Ui_sweepergui(object):
         self.label_6.setText(_translate("sweepergui", "Bodů/dekádu"))
         self.logRadioButton.setText(_translate("sweepergui", "Logaritmický"))
         self.linRadioButton.setText(_translate("sweepergui", "Lineární"))
-        self.label.setText(_translate("sweepergui", "Druh Sweepu"))
+        self.label.setText(_translate("sweepergui", "Druh sweepu"))
         self.label_12.setText(_translate("sweepergui", "Sense"))
         self.senseLocalRadioButton.setText(_translate("sweepergui", "Local"))
         self.senseRemoteRadioButton.setText(_translate("sweepergui", "Remote"))

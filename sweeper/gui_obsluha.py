@@ -341,6 +341,8 @@ class GuiProgram(Ui_sweepergui):
         output += '# ======== Sweep ID: ' + str(self.sweep_id) + ' ========' + '\n'
         output += '# ======== ' + str(len(self.full_data)) + ' sweeps' + ' ========' + '\n'
 
+        output += self.get_measurement_parameters()
+
         for data in self.full_data:
             output += '# ======== SWEEP START ========\n'
             output += data.replace(',', '    ')
@@ -385,3 +387,38 @@ class GuiProgram(Ui_sweepergui):
 
             # Update GUI
             self.exportButton.setText('Export ✗')
+
+    def get_measurement_parameters(self):
+        out = ''
+        out += "# Sweep ID: {}\n".format(self.sweep_id)
+        if self.log_sweep:
+            out += "# Log sweep:\n"
+            out += "# Rozsah (min, max) [A]: {}, {}\n".format(self.startEdit.text(),
+                                                              self.endEdit.text()
+                                                              )
+            out += "# Bodů na dekádu [-]: {}\n".format(self.decadeComboBox.currentIndex())
+        else:
+            out += "# Linear sweep\n"
+            out += "# Rozsah (min, max, points) [A]: {}, {}, {}\n".format(self.startEdit.text(),
+                                                                          self.endEdit.text(),
+                                                                          self.stepEdit.text()
+                                                                          )
+
+        out += "# Delay [ms]: {}\n".format(self.delaySpinBox.value())
+        out += "# Počet charakteristik [-]: {}\n".format(self.pocetMereniBox.value())
+
+        if self.sense_local:
+            out += "# Sense: local\n"
+        else:
+            out += "# Sense: remote\n"
+
+        out += "# Sloupce (Source, Measure, Delay, Time): {} {} {} {}\n".format(self.sourceCheckBox.checkState(),
+                                                                                self.measureCheckBox.checkState(),
+                                                                                self.delayCheckBox.checkState(),
+                                                                                self.timeCheckBox.checkState()
+                                                                                )
+
+        out += "# Úvodní DC stabilizace [s]: {}\n".format(self.stableSpinBox.value())
+        out += "# Stabilizace [s]: {}\n".format(self.sleepSpinBox.value())
+
+        return out
