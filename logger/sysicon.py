@@ -1,7 +1,7 @@
 import sys
 from PyQt5 import QtGui, QtCore, QtWidgets
 from sensor import Sensor
-
+from datetime import datetime
 
 class SystemTrayIcon(QtWidgets.QSystemTrayIcon):
     s1_freq = 5  # [s]
@@ -27,15 +27,19 @@ class SystemTrayIcon(QtWidgets.QSystemTrayIcon):
 
         self.s1 = Sensor("COM8")
 
-        # self.run()
+        self.run()
 
     def run(self):
+        with open("C:\\Users\\roese\\Desktop\\temp_log.txt", 'a') as outfile:
+            outfile.write("# Time                          Temp       Dewpoint   Humidity\n")
         while True:
             print("Sleeping for {} seconds.".format(self.s1_freq))
             self.artSleep(self.s1_freq * 1000)
             reading = self.s1.read()
             print(reading)
-
+            with open("C:\\Users\\roese\\Desktop\\temp_log.txt", 'a') as outfile:
+                outfile.write("{0:}      {1:.2f}      {2:.2f}      {3:.2f}\n".format(str(datetime.now()), reading["temperature"], reading["dewpoint"], reading["humidity"]))
+            
     def artSleep(self, sleepTime):
         stop_time = QtCore.QTime()
         stop_time.restart()
