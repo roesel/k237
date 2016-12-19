@@ -13,7 +13,10 @@ from matplotlib.backends.backend_qt5agg import (
     FigureCanvasQTAgg as FigureCanvas,
     NavigationToolbar2QT as NavigationToolbar)
 
+# TODO - poslední sweep by neměl sleepovat
+# TODO - upravovat delaye pro každou dekádu zvlášť
 # TODO - přepínání Sense - local/remote
+# TODO - sundat omezení na políčka
 # TODO - MODIFY log sweep - různý delay v různých oblastech
 # TODO - hodně čudlíkovejch paramterů...
 # TODO - export - přidat hlavičku datům podle sloupců
