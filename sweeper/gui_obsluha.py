@@ -311,11 +311,12 @@ class GuiProgram(Ui_sweepergui):
             self.startBtn.clicked.disconnect()
             self.startBtn.clicked.connect(self.stopFunc)
             self.startBtn.setText("Abort")
+            self.exportButton.setText('Export')
 
     def export_data(self):
         """
         Exportuje data pomocí ukládacího dialogu Qt. V případě chybného zadání
-        souboru nic neudělá a potěžuje si do konzole.
+        souboru nic neudělá a postěžuje si do konzole.
         """
         proposed_name = str(self.sweep_id).replace(" ", "_").replace(":", ".")
 
@@ -344,7 +345,7 @@ class GuiProgram(Ui_sweepergui):
             # Update GUI
             self.exportButton.setText('Export ✔')
         except:
-            print("Export neúspěšný. Data pravděpodobně nejsou uložena!")
+            print("Export neuspesny. Data pravdepodobne nejsou ulozena!")
 
             # Update GUI
             self.exportButton.setText('Export ✗')
