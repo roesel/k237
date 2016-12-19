@@ -210,6 +210,10 @@ class GuiProgram(Ui_sweepergui):
                 sweep_results = misc.nice_format(output, cols=self.cols)
                 data.append(misc.unpack(sweep_results, cols=self.cols))
                 self.full_data.append(sweep_results)
+
+                print('Ukladam docasna data...')
+                self.dump_data()
+
                 n_hotovych_mereni += 1
                 self.bigProgBar.setValue(n_hotovych_mereni)
                 self.plot_data(data)
@@ -253,8 +257,9 @@ class GuiProgram(Ui_sweepergui):
                     self.littleProgBar.setValue(int(progress / sweep_defined_size * 100))
                 except:
                     print('Invalid progress!')
-        print('One sweep done.')
+        print('Jeden sweep hotov.')
         self.littleProgBar.setValue(100)
+
         # print('Sleeping for 0.5 s...')
         # self.artSleep(0.5)
         if self.stop:
@@ -313,6 +318,27 @@ class GuiProgram(Ui_sweepergui):
             self.startBtn.setText("Abort")
             self.exportButton.setText('Export')
 
+    def get_export_data(self):
+        output = ""
+        output += '# ======== Sweep ID: ' + str(self.sweep_id) + ' ========' + '\n'
+        output += '# ======== ' + str(len(self.full_data)) + ' sweeps' + ' ========' + '\n'
+
+        for data in self.full_data:
+            output += '# ======== SWEEP START ========\n'
+            output += data.replace(',', '    ')
+            output += '# ======== SWEEP END ========\n\n'
+
+        return output
+
+    def dump_data(self):
+        save_file_name = 'C:\Repa\k237\sweeper\data_temp.txt'
+        try:
+            with open(save_file_name, "w") as text_file:
+                text = self.get_export_data()
+                text_file.write(text)
+        except:
+            print("Nouzovy dump se nepovedl.")
+
     def export_data(self):
         """
         Exportuje data pomocí ukládacího dialogu Qt. V případě chybného zadání
@@ -331,16 +357,8 @@ class GuiProgram(Ui_sweepergui):
         # Vlastní uložení souboru
         try:
             with open(save_file_name, "w") as text_file:
-                text_file.write('# ======== Sweep ID: ' + str(self.sweep_id) + ' ========' + '\n')
-                text_file.write(
-                    '# ======== ' +
-                    str(len(self.full_data)) + ' sweeps' +
-                    ' ========' + '\n')
-
-                for data in self.full_data:
-                    text_file.write('# ======== SWEEP START ========\n')
-                    text_file.write(data.replace(',', '    '))
-                    text_file.write('# ======== SWEEP END ========\n\n')
+                text = self.get_export_data()
+                text_file.write(text)
 
             # Update GUI
             self.exportButton.setText('Export ✔')
