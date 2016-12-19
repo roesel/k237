@@ -43,7 +43,7 @@ class GuiProgram(Ui_sweepergui):
 
         # Připojení k instrumentu
         #self.inst = Instrument('GPIB0::17::INSTR', visa_location='C:\WINDOWS\SysWOW64\\visa32.dll')
-        self.inst = Instrument('GPIB0::17::INSTR', virtual=True)
+        self.inst = Instrument('GPIB0::17::INSTR', virtual=False)
 
     def artSleep(self, sleepTime):
         """
