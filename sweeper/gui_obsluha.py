@@ -230,6 +230,11 @@ class GuiProgram(Ui_sweepergui):
                 n_hotovych_mereni += 1
                 self.bigProgBar.setValue(n_hotovych_mereni)
                 self.plot_data(data)
+
+                sleep_time = self.sleepSpinBox.value()
+                print("Pauza mezi sweepy - {} s.".format(sleep_time))
+                self.artSleep(sleep_time)
+
             else:
                 print("Output was empty. Interrupted measurement?")
 
@@ -272,10 +277,6 @@ class GuiProgram(Ui_sweepergui):
                     print('Invalid progress!')
         print('Jeden sweep hotov.')
         self.littleProgBar.setValue(100)
-
-        sleep_time = self.sleepSpinBox.value()
-        print("Pauza mezi sweepy - {} s.".format(sleep_time))
-        self.artSleep(sleep_time)
 
         if self.stop:
             return ""
