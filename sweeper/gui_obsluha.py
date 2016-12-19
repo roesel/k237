@@ -146,6 +146,10 @@ class GuiProgram(Ui_sweepergui):
         lin_sweep = self.linRadioButton.isChecked()
         self.log_sweep = log_sweep
 
+        sense_local = self.senseLocalRadioButton.isChecked()
+        sense_remote = self.senseRemoteRadioButton.isChecked()
+        self.sense_local = sense_local
+
         col_source = self.sourceCheckBox.checkState()
         col_delay = self.delayCheckBox.checkState()
         col_measure = self.measureCheckBox.checkState()
@@ -184,6 +188,14 @@ class GuiProgram(Ui_sweepergui):
 
         # Declare Export not done on this sweep
         self.exportButton.setText('Export')
+
+        # Local or Remote sense?
+        if self.sense_local:
+            print("Zapinam Sense - LOCAL.")
+            self.inst.write("O0X")
+        else:
+            print("Zapinam Sense - REMOTE.")
+            self.inst.write("O1X")
 
         # Úvodní stabilizace
         stabilize_time = self.stableSpinBox.value()
@@ -298,6 +310,8 @@ class GuiProgram(Ui_sweepergui):
             self.pocetMereniBox,
             self.logRadioButton,
             self.linRadioButton,
+            self.senseLocalRadioButton,
+            self.senseRemoteRadioButton,
             self.sourceCheckBox,
             self.delayCheckBox,
             self.measureCheckBox,

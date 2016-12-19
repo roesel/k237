@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>900</width>
-    <height>650</height>
+    <height>663</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -198,7 +198,7 @@
          <item>
           <widget class="QRadioButton" name="senseLocalRadioButton">
            <property name="enabled">
-            <bool>false</bool>
+            <bool>true</bool>
            </property>
            <property name="text">
             <string>Local</string>
@@ -208,10 +208,13 @@
          <item>
           <widget class="QRadioButton" name="senseRemoteRadioButton">
            <property name="enabled">
-            <bool>false</bool>
+            <bool>true</bool>
            </property>
            <property name="text">
             <string>Remote</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
            </property>
           </widget>
          </item>

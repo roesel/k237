@@ -11,7 +11,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_sweepergui(object):
     def setupUi(self, sweepergui):
         sweepergui.setObjectName("sweepergui")
-        sweepergui.resize(900, 650)
+        sweepergui.resize(900, 663)
         sweepergui.setMinimumSize(QtCore.QSize(900, 0))
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap("img/logo_crop.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
@@ -100,11 +100,12 @@ class Ui_sweepergui(object):
         self.verticalLayout_3 = QtWidgets.QVBoxLayout(self.groupBox_5)
         self.verticalLayout_3.setObjectName("verticalLayout_3")
         self.senseLocalRadioButton = QtWidgets.QRadioButton(self.groupBox_5)
-        self.senseLocalRadioButton.setEnabled(False)
+        self.senseLocalRadioButton.setEnabled(True)
         self.senseLocalRadioButton.setObjectName("senseLocalRadioButton")
         self.verticalLayout_3.addWidget(self.senseLocalRadioButton)
         self.senseRemoteRadioButton = QtWidgets.QRadioButton(self.groupBox_5)
-        self.senseRemoteRadioButton.setEnabled(False)
+        self.senseRemoteRadioButton.setEnabled(True)
+        self.senseRemoteRadioButton.setChecked(True)
         self.senseRemoteRadioButton.setObjectName("senseRemoteRadioButton")
         self.verticalLayout_3.addWidget(self.senseRemoteRadioButton)
         self.formLayout_2.setWidget(6, QtWidgets.QFormLayout.FieldRole, self.groupBox_5)
