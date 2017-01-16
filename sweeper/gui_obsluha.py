@@ -3,6 +3,7 @@ import sys
 import time
 import datetime
 import misc
+import pickle
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 from gui import Ui_sweepergui
@@ -41,6 +42,9 @@ class GuiProgram(Ui_sweepergui):
         self.decadeComboBox.clear()
         self.decadeComboBox.addItems(self.decade_combo_values)
         self.decadeComboBox.setCurrentIndex(1)
+
+        # Try to load last parameters from Pickle
+        self.load_parameters()
 
         # Připojení k instrumentu
         #self.inst = Instrument('GPIB0::17::INSTR', visa_location='C:\WINDOWS\SysWOW64\\visa32.dll')
@@ -92,6 +96,64 @@ class GuiProgram(Ui_sweepergui):
         self.canvas.close()
         self.mplvl.removeWidget(self.toolbar)
         self.toolbar.close()
+
+    def save_parameters(self):
+        parameters_dict = {
+            'sw_min' : str(self.startEdit.text()),
+            'sw_max' : str(self.endEdit.text()),
+            'step' : str(self.stepEdit.text()),
+            'delay' : int(self.delaySpinBox.value()),
+            'decade' : int(self.decadeComboBox.currentIndex()),
+            'n' : int(self.pocetMereniBox.value()),
+
+            'log_sweep' : self.logRadioButton.isChecked(),
+            'lin_sweep' : self.linRadioButton.isChecked(),
+            'sense_local' : self.senseLocalRadioButton.isChecked(),
+            'sense_remote' : self.senseRemoteRadioButton.isChecked(),
+
+            'col_source' : self.sourceCheckBox.checkState(),
+            'col_delay' : self.delayCheckBox.checkState(),
+            'col_measure' : self.measureCheckBox.checkState(),
+            'col_time' : self.timeCheckBox.checkState(),
+
+            'stabilize_time' : self.stableSpinBox.value(),
+            'sleep_time' : self.sleepSpinBox.value()
+        }
+
+        # For pickle, the file needs to be opened in binary mode, hence the "wb"
+        with open("last_parameters.pickle", "wb") as params_file:
+            pickle.dump(parameters_dict, params_file)
+
+    def load_parameters(self):
+        try:
+            # For pickle, the file needs to be opened in binary mode, hence the "wb"
+            with open("last_parameters.pickle", "rb") as params_file:
+                parameters_dict = pickle.load(params_file)
+
+            self.startEdit.setText(parameters_dict['sw_min'])
+            self.endEdit.setText(parameters_dict['sw_max'])
+            self.stepEdit.setText(parameters_dict['step'])
+            self.delaySpinBox.setValue(parameters_dict['delay'])
+            self.decadeComboBox.setCurrentIndex(parameters_dict['decade'])
+            self.pocetMereniBox.setValue(parameters_dict['n'])
+
+            self.logRadioButton.setChecked(parameters_dict['log_sweep'])
+            self.linRadioButton.setChecked(parameters_dict['lin_sweep'])
+            self.senseLocalRadioButton.setChecked(parameters_dict['sense_local'])
+            self.senseRemoteRadioButton.setChecked(parameters_dict['sense_remote'])
+
+            self.sourceCheckBox.setChecked(parameters_dict['col_source'])
+            self.delayCheckBox.setChecked(parameters_dict['col_delay'])
+            self.measureCheckBox.setChecked(parameters_dict['col_measure'])
+            self.timeCheckBox.setChecked(parameters_dict['col_time'])
+
+            self.stableSpinBox.setValue(parameters_dict['stabilize_time'])
+            self.sleepSpinBox.setValue(parameters_dict['sleep_time'])
+
+            print("Nacteni poslednich parametru uspesne! :)")
+
+        except:
+            print("Nacteni poslednich parametru selhalo. :(")
 
     def validateInput(self, sw_min, sw_max, decade, delay, log_sweep, step):
         # Unit testing :P
@@ -167,6 +229,7 @@ class GuiProgram(Ui_sweepergui):
             self.cols += 8
 
         if self.validateInput(sw_min, sw_max, decade, delay, log_sweep, step):
+            self.save_parameters()
             self.measure(sw_min, sw_max, decade, delay, log_sweep, step, n)
         else:
             print('Input failed validation.')
