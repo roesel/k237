@@ -232,16 +232,17 @@ class GuiProgram(Ui_sweepergui):
                 self.bigProgBar.setValue(n_hotovych_mereni)
                 self.plot_data(data)
 
-                sleep_time = self.sleepSpinBox.value()
-                print("Pauza mezi sweepy - {} s.".format(sleep_time))
-                self.artSleep(sleep_time)
+                if n_hotovych_mereni != n:
+                    sleep_time = self.sleepSpinBox.value()
+                    print("Pauza mezi sweepy - {} s.".format(sleep_time))
+                    self.artSleep(sleep_time)
 
             else:
                 print("Output was empty. Interrupted measurement?")
 
         self.inst.operate(False)
         self.enable_ui(True)
-        self.plot_data(data)
+        #self.plot_data(data)
 
     def run_sweep(self):
         ''' Provede jeden sweep, který už musí být definovaný ve stroji.
