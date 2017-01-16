@@ -25,6 +25,7 @@ class GuiProgram(Ui_sweepergui):
     negative_current = False
     log_sweep = True
     stop = True
+    decade_combo_values = ['5', '10', '25', '50']
 
     def __init__(self, dialog):
         Ui_sweepergui.__init__(self)
@@ -38,7 +39,7 @@ class GuiProgram(Ui_sweepergui):
 
         # Populate comboBox
         self.decadeComboBox.clear()
-        self.decadeComboBox.addItems(['5', '10', '25', '50'])
+        self.decadeComboBox.addItems(self.decade_combo_values)
         self.decadeComboBox.setCurrentIndex(1)
 
         # Připojení k instrumentu
@@ -380,7 +381,7 @@ class GuiProgram(Ui_sweepergui):
             with open(save_file_name, "w", encoding="utf-8") as text_file:
                 text = self.get_export_data()
                 text_file.write(text)
-                
+
             # Update GUI
             self.exportButton.setText('Export ✔')
         except:
@@ -397,7 +398,7 @@ class GuiProgram(Ui_sweepergui):
             out += "# Rozsah (min, max) [A]: {}, {}\n".format(self.startEdit.text(),
                                                               self.endEdit.text()
                                                               )
-            out += "# Bodů na dekádu [-]: {}\n".format(self.decadeComboBox.currentIndex())
+            out += "# Bodů na dekádu [-]: {}\n".format(self.decade_combo_values[self.decadeComboBox.currentIndex()])
         else:
             out += "# Linear sweep\n"
             out += "# Rozsah (min, max, points) [A]: {}, {}, {}\n".format(self.startEdit.text(),
