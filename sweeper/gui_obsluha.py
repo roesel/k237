@@ -12,6 +12,7 @@ from k237 import Instrument
 import numpy as np
 import matplotlib
 matplotlib.use("Qt5Agg")
+#matplotlib.rcParams['savefig.directory'] = '/home/david/anaconda'
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import (
     FigureCanvasQTAgg as FigureCanvas,
@@ -94,8 +95,11 @@ class GuiProgram(Ui_sweepergui):
     def rmmpl(self,):
         self.mplvl.removeWidget(self.canvas)
         self.canvas.close()
+        self.canvas.deleteLater()
+
         self.mplvl.removeWidget(self.toolbar)
         self.toolbar.close()
+        self.toolbar.deleteLater()
 
     def save_parameters(self):
         parameters_dict = {
