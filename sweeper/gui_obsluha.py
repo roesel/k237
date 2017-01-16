@@ -414,10 +414,10 @@ class GuiProgram(Ui_sweepergui):
         else:
             out += "# Sense: remote\n"
 
-        out += "# Sloupce (Source, Measure, Delay, Time): {} {} {} {}\n".format(self.sourceCheckBox.checkState(),
-                                                                                self.measureCheckBox.checkState(),
-                                                                                self.delayCheckBox.checkState(),
-                                                                                self.timeCheckBox.checkState()
+        out += "# Sloupce (Source, Measure, Delay, Time): {} {} {} {}\n".format(int(self.sourceCheckBox.checkState()/2),
+                                                                                int(self.measureCheckBox.checkState()/2),
+                                                                                int(self.delayCheckBox.checkState()/2),
+                                                                                int(self.timeCheckBox.checkState()/2)
                                                                                 )
 
         out += "# Uvodní DC stabilizace [s]: {}\n".format(self.stableSpinBox.value())
