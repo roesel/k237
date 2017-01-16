@@ -52,7 +52,7 @@ class GuiProgram(Ui_sweepergui):
 
     def artSleep(self, sleepTime):
         """
-        Čeká čas sleepTime v eskundách, zatím ale každých 50 milisekund řeší
+        Čeká čas sleepTime v sekundách, zatím ale každých 50 milisekund řeší
         akce, o které se někdo pokoušel v GUI.
         """
         stop_time = QtCore.QTime()
