@@ -72,7 +72,7 @@ class GuiProgram(Ui_sweepergui):
         ax1f1 = fig1.add_subplot(111)
         ax1f1.set_xlabel('I [A]')
         ax1f1.set_ylabel('U [V]')
-        ax1f1.set_title('Sweep @ ' + str(self.sweep_id))
+        ax1f1.set_title('Sweep ID: ' + self.sweep_id)
         for d in data:
             x, y = d
             ax1f1.plot(x, y, color='red')
@@ -192,7 +192,7 @@ class GuiProgram(Ui_sweepergui):
         self.stop = False
 
         # aktuální čas pro ID
-        self.sweep_id = datetime.datetime.now()
+        self.sweep_id = '{0:%Y-%m-%d_%H-%M-%S}'.format(datetime.datetime.now())
 
         sw_min = str(self.startEdit.text())
         sw_max = str(self.endEdit.text())
@@ -404,7 +404,7 @@ class GuiProgram(Ui_sweepergui):
 
     def get_export_data(self):
         output = ""
-        output += '# ======== Sweep ID: ' + str(self.sweep_id) + ' ========' + '\n'
+        output += '# ======== Sweep ID: ' + self.sweep_id + ' ========' + '\n'
         output += '# ======== ' + str(len(self.full_data)) + ' sweeps' + ' ========' + '\n'
 
         output += self.get_measurement_parameters()
@@ -430,7 +430,7 @@ class GuiProgram(Ui_sweepergui):
         Exportuje data pomocí ukládacího dialogu Qt. V případě chybného zadání
         souboru nic neudělá a postěžuje si do konzole.
         """
-        proposed_name = str(self.sweep_id).replace(" ", "_").replace(":", ".")
+        proposed_name = self.sweep_id
 
         # Qt Dialog na výběr souboru k uložení
         save_file_name, _ = QtWidgets.QFileDialog.getSaveFileName(
