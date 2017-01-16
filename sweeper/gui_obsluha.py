@@ -150,6 +150,8 @@ class GuiProgram(Ui_sweepergui):
             self.stableSpinBox.setValue(parameters_dict['stabilize_time'])
             self.sleepSpinBox.setValue(parameters_dict['sleep_time'])
 
+            self.switch_linear()
+
             print("Nacteni poslednich parametru uspesne! :)")
 
         except:
