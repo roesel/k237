@@ -354,7 +354,7 @@ class GuiProgram(Ui_sweepergui):
     def dump_data(self):
         save_file_name = 'C:\Repa\k237\sweeper\data_temp.txt'
         try:
-            with open(save_file_name, "w") as text_file:
+            with open(save_file_name, "w", encoding="utf-8") as text_file:
                 text = self.get_export_data()
                 text_file.write(text)
         except:
@@ -377,10 +377,10 @@ class GuiProgram(Ui_sweepergui):
 
         # Vlastní uložení souboru
         try:
-            with open(save_file_name, "w") as text_file:
+            with open(save_file_name, "w", encoding="utf-8") as text_file:
                 text = self.get_export_data()
                 text_file.write(text)
-
+                
             # Update GUI
             self.exportButton.setText('Export ✔')
         except:
@@ -419,7 +419,7 @@ class GuiProgram(Ui_sweepergui):
                                                                                 self.timeCheckBox.checkState()
                                                                                 )
 
-        out += "# Úvodní DC stabilizace [s]: {}\n".format(self.stableSpinBox.value())
+        out += "# Uvodní DC stabilizace [s]: {}\n".format(self.stableSpinBox.value())
         out += "# Stabilizace [s]: {}\n".format(self.sleepSpinBox.value())
 
         return out
