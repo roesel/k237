@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>sweepergui</class>
+ <widget class="QDialog" name="sweepergui">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>900</width>
+    <height>663</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>900</width>
+    <height>0</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Sweeper</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>img/logo_crop.png</normaloff>img/logo_crop.png</iconset>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="7" column="1" colspan="2">
+    <widget class="QProgressBar" name="bigProgBar">
+     <property name="maximum">
+      <number>1</number>
+     </property>
+     <property name="value">
+      <number>0</number>
+     </property>
+     <property name="format">
+      <string>%v/%m</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1">
+    <widget class="QLabel" name="label_9">
+     <property name="text">
+      <string>Aktuální sweep:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="2">
+    <widget class="QPushButton" name="exportButton">
+     <property name="text">
+      <string>Export</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0" rowspan="9">
+    <widget class="QWidget" name="mplwindow" native="true">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="baseSize">
+      <size>
+       <width>0</width>
+       <height>0</height>
+      </size>
+     </property>
+     <layout class="QVBoxLayout" name="mplvl"/>
+    </widget>
+   </item>
+   <item row="0" column="1" colspan="2">
+    <widget class="QGroupBox" name="groupBox_2">
+     <property name="title">
+      <string>Parametry sweepu</string>
+     </property>
+     <layout class="QFormLayout" name="formLayout_2">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>Start [A]</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="startEdit">
+        <property name="text">
+         <string>1e-10</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>End [A]</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="endEdit">
+        <property name="text">
+         <string>1e-12</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_11">
+        <property name="text">
+         <string>Step [A]</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QLineEdit" name="stepEdit">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string>1e-12</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_5">
+        <property name="text">
+         <string>Delay [ms]</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QSpinBox" name="delaySpinBox">
+        <property name="maximum">
+         <number>65000</number>
+        </property>
+        <property name="value">
+         <number>10</number>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="label_6">
+        <property name="text">
+         <string>Bodů/dekádu</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QComboBox" name="decadeComboBox"/>
+      </item>
+      <item row="5" column="1">
+       <widget class="QGroupBox" name="groupBox_4">
+        <property name="title">
+         <string/>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <item>
+          <widget class="QRadioButton" name="logRadioButton">
+           <property name="text">
+            <string>Logaritmický</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QRadioButton" name="linRadioButton">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
+           <property name="text">
+            <string>Lineární</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item row="5" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Druh sweepu</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="0">
+       <widget class="QLabel" name="label_12">
+        <property name="text">
+         <string>Sense</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="1">
+       <widget class="QGroupBox" name="groupBox_5">
+        <property name="title">
+         <string/>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_3">
+         <item>
+          <widget class="QRadioButton" name="senseLocalRadioButton">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
+           <property name="text">
+            <string>Local</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QRadioButton" name="senseRemoteRadioButton">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
+           <property name="text">
+            <string>Remote</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="1" column="1" colspan="2">
+    <widget class="QGroupBox" name="groupBox">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="title">
+      <string>Ostatní parametry</string>
+     </property>
+     <layout class="QFormLayout" name="formLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Počet charakteristik</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QSpinBox" name="pocetMereniBox">
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="maximum">
+         <number>9999</number>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_7">
+        <property name="text">
+         <string>Sloupce dat</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QGroupBox" name="groupBox_3">
+        <property name="title">
+         <string/>
+        </property>
+        <property name="flat">
+         <bool>false</bool>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <widget class="QCheckBox" name="sourceCheckBox">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="text">
+            <string>Source</string>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="measureCheckBox">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="text">
+            <string>Measure</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="delayCheckBox">
+           <property name="text">
+            <string>Delay</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="timeCheckBox">
+           <property name="text">
+            <string>Time</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_8">
+        <property name="text">
+         <string>Úvodní DC mód [s]</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QSpinBox" name="stableSpinBox">
+        <property name="maximum">
+         <number>9999</number>
+        </property>
+        <property name="value">
+         <number>5</number>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QSpinBox" name="sleepSpinBox">
+        <property name="value">
+         <number>3</number>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_13">
+        <property name="text">
+         <string>Stabilizace [s]</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="5" column="1" colspan="2">
+    <widget class="QProgressBar" name="littleProgBar">
+     <property name="value">
+      <number>0</number>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="1">
+    <widget class="QPushButton" name="startBtn">
+     <property name="text">
+      <string>Start</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="1">
+    <widget class="QLabel" name="label_10">
+     <property name="text">
+      <string>Všechny sweepy:</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

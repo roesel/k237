@@ -1,3 +1,3 @@
-cd C:\Repa\k237\sweeper
+cd C:\Repa\k237
 python sweeper.py
 timeout /t -1

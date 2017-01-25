@@ -1,48 +1,92 @@
 # -*- coding: utf-8 -*-
 import time
 import visa
+from virtual_smu import Virtual_SMU
+
+# TODO - u nastavování parametrů přístroje by mělo jít ověřit, zda se to
+# povedlo a pokud ne, hodit chybu
+
 
 class Instrument:
     'Třída obsluhující měřící přístroj KEITHLEY 237.'
 
-    verbose = True
+    verbose = True           # Má program blábolit?
+    visa_location = ''       # Umístění VISA knihovny
+    virtual = False
+    resource_address = ''    # Adresa měřáku (...GPIB::17...)
+    SMU = None
 
-    # inst
-    visa_location = ''
-    resource_address = ''
-
-    def __init__(self, resource_address, visa_location = False):
+    def __init__(self, resource_address, visa_location=False, virtual=False):
+        '''
+        Metoda volaná při tvorbě objektu.
+        '''
+        # Uložení adresy přístroje do vlastní proměnné
         self.resource_address = resource_address
+        self.virtual = virtual
+
+        # Pokud v parametrech bylo speciální umístění VISA knihovny, uložit do vlastní proměnné.
         if visa_location:
             self.visa_location = visa_location
+
+        # Zahájit komunikaci s přístrojem
         self.initialize_communication()
 
     def initialize_communication(self):
-        'Zahajuje komunikaci s přístrojem.'
+        '''Zahajuje komunikaci s přístrojem.'''
 
         # Nastavení VISA knihovny
-        if verbose:
+        if self.verbose:
             print('Nastavuji VISA knihovnu...')
-        if visa_location:
-            rm = visa.ResourceManager()
+
+        if self.visa_location:
+            rm = visa.ResourceManager(self.visa_location)
         else:
-            rm = visa.ResourceManager(visa_location)
+            rm = visa.ResourceManager()
 
         # Připojení k přístroji na konkrétní adrese
-        if verbose:
-            print('Připojuji se k zařízení...')
-        self.inst = rm.open_resource(resource_address)
+        if self.verbose:
+            print('Pripojuji se k zarizeni...')
 
-    def set_log_sweep(self, s_min, s_max, points=1, range=0, delay=20):
-        ''' Nastaví sweep na přístroji, opět půjde vylepšit na chytřejší. '''
-        self.inst.write('Q2,'+str(s_min)+","+str(s_max)+","+str(points)+','+str(range)+','+str(delay)+'X')
+        if not self.virtual:
+            self.SMU = rm.open_resource(self.resource_address)
+        else:
+            self.SMU = Virtual_SMU()
+
+        # V tuhle chvíli by mělo být všechno ready na měření.
 
     def trigger(self):
-        self.inst.write('H0X')
+        '''
+        Pošle na přístroj okamžitý trigger.
+        '''
+        self.SMU.write('H0X')
+
+    def operate(self, on):
+        '''
+        Podle toho jestli on=True nebo on=False vypne/zapne OPERATE.
+        '''
+        if on:
+            self.SMU.write('N1X')
+        else:
+            self.SMU.write('N0X')
+
+    def write(self, command):
+        '''
+        Přepošle string do metody write našeho SMU.
+        '''
+        self.SMU.write(command)
+
+    def read(self):
+        '''
+        Přečte .read() z SMU.
+        '''
+        return self.SMU.read()
 
     def set_source_and_function(self, source, function):
+        '''
+        Čitelnější nastavení zdroje/měřené veličiny.
+        '''
         # Nastavení zdroje napětí/proudu
-        if source.upper() == 'V':
+        if source.upper() == 'U':
             source_num = '0'
         elif source.upper() == 'I':
             source_num = '1'
@@ -57,14 +101,8 @@ class Instrument:
         else:
             raise ValueError('Invalid function specified. Valid options: DC, Sweep.')
 
-        if verbose:
-            print('K237 bude zdroj '+source.upper()+' a měříme v módu '+function.upper()+'.')
+        if self.verbose:
+            print('K237 bude zdroj ' + source.upper() + ' a merime v modu ' + function.upper() + '.')
 
         # Odesílání nastavení zařízení
-        self.inst('F'+source_num+','+function_num+'X')
-
-    def set_data_format(self, items=5, form=2, lines=2):
-        ''' Nastavuje formát, ale zatím není moc chytrá a vlastně nevím, jak ji
-            chci udělat.
-        '''
-        self.inst('G'+str(items)+','+str(form)+','+str(lines)+'X')
+        self.SMU.write('F' + source_num + ',' + function_num + 'X')
