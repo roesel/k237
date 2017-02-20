@@ -329,7 +329,7 @@ class GuiProgram(Ui_sweepergui):
                     self.artSleep(sleep_time)
 
             else:
-                print("Output was empty. Interrupted measurement?")
+                print("Output byl prazdny. Prerusene mereni?")
 
         self.inst.operate(False)
         self.enable_ui(True)
