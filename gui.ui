@@ -172,6 +172,13 @@
            </property>
           </widget>
          </item>
+         <item>
+          <widget class="QCheckBox" name="chkLoop">
+           <property name="text">
+            <string>Obousměrný</string>
+           </property>
+          </widget>
+         </item>
         </layout>
        </widget>
       </item>

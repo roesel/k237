@@ -301,8 +301,12 @@ class GuiProgram(Ui_sweepergui):
 
         if self.log_sweep:
             self.inst.write("Q2," + sw_min + "," + sw_max + "," + decade + ",0," + delay + "X")
+            if self.chkLoop.checkState():
+                self.inst.write("Q8," + sw_max + "," + sw_min + "," + decade + ",0," + delay + "X")
         else:
             self.inst.write("Q1," + sw_min + "," + sw_max + "," + step + ",0," + delay + "X")
+            if self.chkLoop.checkState():
+                self.inst.write("Q7," + sw_max + "," + sw_min + "," + step + ",0," + delay + "X")
 
         data = []
         self.full_data = []
@@ -411,6 +415,7 @@ class GuiProgram(Ui_sweepergui):
             self.timeCheckBox,
             self.stableSpinBox,
             self.sleepSpinBox,
+            self.chkLoop,
         ]
 
         for element in ui_elements:
