@@ -35,10 +35,9 @@ if __name__ == '__main__':
 
     prog = GuiProgram(dialog)
 
-    # Prázdný plot pro GUI
-    fig1 = Figure()
-    ax1f1 = fig1.add_subplot(111)
-    prog.addmpl(fig1)
+    fig = Figure()  # empty figure to be put into GUI
+    ax1f1 = fig.add_subplot(111)  # empty plot
+    prog.put_figure_into_gui(fig, ax1f1)
 
     dialog.show()
     sys.exit(app.exec_())

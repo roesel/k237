@@ -61,67 +61,82 @@ class GuiProgram(Ui_sweepergui):
         while stop_time.elapsed() < sleepTime * 1000:
             QtWidgets.QApplication.processEvents(QtCore.QEventLoop.AllEvents, 50)
 
-    def plot_figure(self):
-        fig1 = Figure()
-        ax1f1 = fig1.add_subplot(111)
-        ax1f1.plot(np.random.rand(5))
-        self.rmmpl()
-        self.addmpl(fig1)
-
     def plot_data(self, data):
-        fig1 = Figure()
-        ax1f1 = fig1.add_subplot(111)
-        ax1f1.set_xlabel('I [A]')
-        ax1f1.set_ylabel('U [V]')
-        ax1f1.set_title('Sweep ID: ' + self.sweep_id)
-        for d in data:
-            x, y = d
-            ax1f1.plot(x, y, color='red')
-            if self.log_sweep:
-                ax1f1.set_xscale('log')
-            else:
-                ax1f1.set_xscale('linear')
-        self.rmmpl()
-        self.addmpl(fig1)
+        ''' Plots the provided data onto the figure in the GUI. '''
 
-    def addmpl(self, fig):
-        self.canvas = FigureCanvas(fig)
+        self.ax.clear()  # Clear contents of current axis
+
+        # Plot cosmetics
+        self.ax.set_xlabel('I [A]')
+        self.ax.set_ylabel('U [V]')
+        self.ax.set_title('Sweep ID: ' + self.sweep_id)
+
+        for i in range(len(data)):
+            x, y = data[i]
+            if i == len(data) - 1:
+                color = '#0066FF'
+            elif i == len(data) - 2:
+                color = '#6600CC'
+            else:
+                color = '#FF0000'
+            self.ax.plot(x, y, color=color)
+            if self.log_sweep:
+                self.ax.set_xscale('log')
+            else:
+                self.ax.set_xscale('linear')
+
+        self.canvas.draw()  # Propagate changes to GUI
+
+    def put_figure_into_gui(self, fig, ax):
+        ''' Creates a figure and places it inside the GUI container. '''
+
+        # Figure
+        self.fig = fig
+        self.ax = ax
+
+        # Canvas
+        self.canvas = FigureCanvas(self.fig)
         self.mplvl.addWidget(self.canvas)
         self.canvas.draw()
-        self.toolbar = NavigationToolbar(self.canvas,
-                                         self.mplwindow, coordinates=True)
+
+        # Toolbar
+        self.toolbar = NavigationToolbar(self.canvas, self.mplwindow, coordinates=True)
         self.mplvl.addWidget(self.toolbar)
 
-    def rmmpl(self,):
+    def remove_figure_from_gui(self,):
+        ''' Deletes the figure from the GUI. '''
+
+        # Canvas
         self.mplvl.removeWidget(self.canvas)
         self.canvas.close()
-        self.canvas.deleteLater()
+        self.canvas.deleteLater()  # this prevents memory leaks
 
+        # Toolbar
         self.mplvl.removeWidget(self.toolbar)
         self.toolbar.close()
-        self.toolbar.deleteLater()
+        self.toolbar.deleteLater()  # this prevent memory leaks
 
     def save_parameters(self):
         parameters_dict = {
-            'sw_min' : str(self.startEdit.text()),
-            'sw_max' : str(self.endEdit.text()),
-            'step' : str(self.stepEdit.text()),
-            'delay' : int(self.delaySpinBox.value()),
-            'decade' : int(self.decadeComboBox.currentIndex()),
-            'n' : int(self.pocetMereniBox.value()),
+            'sw_min': str(self.startEdit.text()),
+            'sw_max': str(self.endEdit.text()),
+            'step': str(self.stepEdit.text()),
+            'delay': int(self.delaySpinBox.value()),
+            'decade': int(self.decadeComboBox.currentIndex()),
+            'n': int(self.pocetMereniBox.value()),
 
-            'log_sweep' : self.logRadioButton.isChecked(),
-            'lin_sweep' : self.linRadioButton.isChecked(),
-            'sense_local' : self.senseLocalRadioButton.isChecked(),
-            'sense_remote' : self.senseRemoteRadioButton.isChecked(),
+            'log_sweep': self.logRadioButton.isChecked(),
+            'lin_sweep': self.linRadioButton.isChecked(),
+            'sense_local': self.senseLocalRadioButton.isChecked(),
+            'sense_remote': self.senseRemoteRadioButton.isChecked(),
 
-            'col_source' : self.sourceCheckBox.checkState(),
-            'col_delay' : self.delayCheckBox.checkState(),
-            'col_measure' : self.measureCheckBox.checkState(),
-            'col_time' : self.timeCheckBox.checkState(),
+            'col_source': self.sourceCheckBox.checkState(),
+            'col_delay': self.delayCheckBox.checkState(),
+            'col_measure': self.measureCheckBox.checkState(),
+            'col_time': self.timeCheckBox.checkState(),
 
-            'stabilize_time' : self.stableSpinBox.value(),
-            'sleep_time' : self.sleepSpinBox.value()
+            'stabilize_time': self.stableSpinBox.value(),
+            'sleep_time': self.sleepSpinBox.value()
         }
 
         # For pickle, the file needs to be opened in binary mode, hence the "wb"
@@ -311,7 +326,7 @@ class GuiProgram(Ui_sweepergui):
 
         self.inst.operate(False)
         self.enable_ui(True)
-        #self.plot_data(data)
+        # self.plot_data(data)
 
     def run_sweep(self):
         ''' Provede jeden sweep, který už musí být definovaný ve stroji.
@@ -484,10 +499,10 @@ class GuiProgram(Ui_sweepergui):
         else:
             out += "# Sense: remote\n"
 
-        out += "# Sloupce (Source, Measure, Delay, Time): {} {} {} {}\n".format(int(self.sourceCheckBox.checkState()/2),
-                                                                                int(self.measureCheckBox.checkState()/2),
-                                                                                int(self.delayCheckBox.checkState()/2),
-                                                                                int(self.timeCheckBox.checkState()/2)
+        out += "# Sloupce (Source, Measure, Delay, Time): {} {} {} {}\n".format(int(self.sourceCheckBox.checkState() / 2),
+                                                                                int(self.measureCheckBox.checkState() / 2),
+                                                                                int(self.delayCheckBox.checkState() / 2),
+                                                                                int(self.timeCheckBox.checkState() / 2)
                                                                                 )
 
         out += "# Uvodní DC stabilizace [s]: {}\n".format(self.stableSpinBox.value())
