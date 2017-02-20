@@ -333,7 +333,6 @@ class GuiProgram(Ui_sweepergui):
 
         self.inst.operate(False)
         self.enable_ui(True)
-        # self.plot_data(data)
 
     def run_sweep(self):
         ''' Provede jeden sweep, který už musí být definovaný ve stroji.
