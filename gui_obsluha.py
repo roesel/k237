@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import sys
+import os
 import time
 import datetime
 import misc
@@ -22,12 +23,14 @@ from matplotlib.backends.backend_qt5agg import (
 class GuiProgram(Ui_sweepergui):
 
     cols = 0
-    sweep_id = 0
+    sweep_id = 'mereni'
     full_data = []
     negative_current = False
     log_sweep = True
     stop = True
     decade_combo_values = ['5', '10', '25', '50']
+    save_directory = False
+    save_filename = False
 
     def __init__(self, dialog):
         Ui_sweepergui.__init__(self)
@@ -44,8 +47,12 @@ class GuiProgram(Ui_sweepergui):
         self.decadeComboBox.addItems(self.decade_combo_values)
         self.decadeComboBox.setCurrentIndex(1)
 
+        self.exportButton.setEnabled(False)
+
         # Try to load last parameters from Pickle
         self.load_parameters()
+
+        self.save_directory = os.path.dirname(os.path.abspath(__file__))
 
         # Připojení k instrumentu
         #self.inst = Instrument('GPIB0::17::INSTR', visa_location='C:\WINDOWS\SysWOW64\\visa32.dll')
@@ -92,6 +99,7 @@ class GuiProgram(Ui_sweepergui):
                 self.ax.set_xlim(original_xlim)
                 self.ax.set_ylim(original_ylim)
 
+        self.canvas.get_default_filename = self.get_default_filename
         self.canvas.draw()  # Propagate changes to GUI
 
     def put_figure_into_gui(self, fig, ax):
@@ -122,6 +130,26 @@ class GuiProgram(Ui_sweepergui):
         self.mplvl.removeWidget(self.toolbar)
         self.toolbar.close()
         self.toolbar.deleteLater()  # this prevent memory leaks
+
+    def get_default_filename(self):
+        """
+        Return a string, which includes extension, suitable for use as
+        a default filename.
+        """
+        default_basename = self.save_filename or "sweep_{}".format(self.sweep_id) or 'image'
+        default_filetype = self.canvas.get_default_filetype()
+        default_filename = default_basename + '.' + default_filetype
+
+        save_dir = os.path.expanduser(matplotlib.rcParams.get('savefig.directory', ''))
+
+        # ensure non-existing filename in save dir
+        i = 1
+        while os.path.isfile(os.path.join(save_dir, default_filename)):
+                # attach numerical count to basename
+            default_filename = '{0}_({1}).{2}'.format(default_basename, i, default_filetype)
+            i += 1
+
+        return default_filename
 
     def save_parameters(self):
         parameters_dict = {
@@ -167,6 +195,7 @@ class GuiProgram(Ui_sweepergui):
             self.linRadioButton.setChecked(parameters_dict['lin_sweep'])
             self.senseLocalRadioButton.setChecked(parameters_dict['sense_local'])
             self.senseRemoteRadioButton.setChecked(parameters_dict['sense_remote'])
+            self.sense_local = sense_local
 
             self.sourceCheckBox.setChecked(parameters_dict['col_source'])
             self.delayCheckBox.setChecked(parameters_dict['col_delay'])
@@ -221,6 +250,7 @@ class GuiProgram(Ui_sweepergui):
 
         # aktuální čas pro ID
         self.sweep_id = '{0:%Y-%m-%d_%H-%M-%S}'.format(datetime.datetime.now())
+        self.save_filename = False
 
         sw_min = str(self.startEdit.text())
         sw_max = str(self.endEdit.text())
@@ -416,6 +446,7 @@ class GuiProgram(Ui_sweepergui):
             self.stableSpinBox,
             self.sleepSpinBox,
             self.chkLoop,
+            self.exportButton,
         ]
 
         for element in ui_elements:
@@ -462,13 +493,14 @@ class GuiProgram(Ui_sweepergui):
         Exportuje data pomocí ukládacího dialogu Qt. V případě chybného zadání
         souboru nic neudělá a postěžuje si do konzole.
         """
-        proposed_name = self.sweep_id
+        proposed_name = self.save_filename or 'sweep_' + self.sweep_id
 
         # Qt Dialog na výběr souboru k uložení
         save_file_name, _ = QtWidgets.QFileDialog.getSaveFileName(
             None,
             'Exportovat výsledky měření',
-            'C:\Repa\k237\data\sweep_' + proposed_name + '.txt',
+            #'C:\Repa\k237\data\sweep_' + proposed_name + '.txt',
+            os.path.join(self.save_directory, proposed_name + '.txt'),
             'Text Files (*.txt);;All Files (*)'
         )
 
@@ -480,6 +512,8 @@ class GuiProgram(Ui_sweepergui):
 
             # Update GUI
             self.exportButton.setText('Export ✔')
+            self.save_directory = os.path.dirname(save_file_name)
+            self.save_filename = os.path.splitext(os.path.basename(save_file_name))[0]
         except:
             print("Export neuspesny. Data pravdepodobne nejsou ulozena!")
 
@@ -494,7 +528,8 @@ class GuiProgram(Ui_sweepergui):
             out += "# Rozsah (min, max) [A]: {}, {}\n".format(self.startEdit.text(),
                                                               self.endEdit.text()
                                                               )
-            out += "# Bodů na dekádu [-]: {}\n".format(self.decade_combo_values[self.decadeComboBox.currentIndex()])
+            out += "# Bodů na dekádu [-]: {}\n".format(
+                self.decade_combo_values[self.decadeComboBox.currentIndex()])
         else:
             out += "# Linear sweep\n"
             out += "# Rozsah (min, max, points) [A]: {}, {}, {}\n".format(self.startEdit.text(),
@@ -511,9 +546,12 @@ class GuiProgram(Ui_sweepergui):
             out += "# Sense: remote\n"
 
         out += "# Sloupce (Source, Measure, Delay, Time): {} {} {} {}\n".format(int(self.sourceCheckBox.checkState() / 2),
-                                                                                int(self.measureCheckBox.checkState() / 2),
-                                                                                int(self.delayCheckBox.checkState() / 2),
-                                                                                int(self.timeCheckBox.checkState() / 2)
+                                                                                int(self.measureCheckBox.checkState(
+                                                                                ) / 2),
+                                                                                int(self.delayCheckBox.checkState(
+                                                                                ) / 2),
+                                                                                int(self.timeCheckBox.checkState(
+                                                                                ) / 2)
                                                                                 )
 
         out += "# Uvodní DC stabilizace [s]: {}\n".format(self.stableSpinBox.value())
