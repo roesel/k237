@@ -64,6 +64,9 @@ class GuiProgram(Ui_sweepergui):
     def plot_data(self, data):
         ''' Plots the provided data onto the figure in the GUI. '''
 
+        original_xlim = self.ax.get_xlim()
+        original_ylim = self.ax.get_ylim()
+
         self.ax.clear()  # Clear contents of current axis
 
         # Plot cosmetics
@@ -84,6 +87,10 @@ class GuiProgram(Ui_sweepergui):
                 self.ax.set_xscale('log')
             else:
                 self.ax.set_xscale('linear')
+
+            if i != 0 and self.chkLockRange.checkState():
+                self.ax.set_xlim(original_xlim)
+                self.ax.set_ylim(original_ylim)
 
         self.canvas.draw()  # Propagate changes to GUI
 

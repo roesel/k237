@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'gui.ui'
 #
-# Created by: PyQt5 UI code generator 5.7
+# Created by: PyQt5 UI code generator 5.6
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -165,6 +165,12 @@ class Ui_sweepergui(object):
         self.label_13 = QtWidgets.QLabel(self.groupBox)
         self.label_13.setObjectName("label_13")
         self.formLayout.setWidget(3, QtWidgets.QFormLayout.LabelRole, self.label_13)
+        self.chkLockRange = QtWidgets.QCheckBox(self.groupBox)
+        self.chkLockRange.setObjectName("chkLockRange")
+        self.formLayout.setWidget(4, QtWidgets.QFormLayout.FieldRole, self.chkLockRange)
+        self.label_14 = QtWidgets.QLabel(self.groupBox)
+        self.label_14.setObjectName("label_14")
+        self.formLayout.setWidget(4, QtWidgets.QFormLayout.LabelRole, self.label_14)
         self.gridLayout.addWidget(self.groupBox, 1, 1, 1, 2)
         self.littleProgBar = QtWidgets.QProgressBar(sweepergui)
         self.littleProgBar.setProperty("value", 0)
@@ -210,6 +216,8 @@ class Ui_sweepergui(object):
         self.timeCheckBox.setText(_translate("sweepergui", "Time"))
         self.label_8.setText(_translate("sweepergui", "Úvodní DC mód [s]"))
         self.label_13.setText(_translate("sweepergui", "Stabilizace [s]"))
+        self.chkLockRange.setText(_translate("sweepergui", "Zamknout rozsah"))
+        self.label_14.setText(_translate("sweepergui", "Nastavení grafu"))
         self.startBtn.setText(_translate("sweepergui", "Start"))
         self.label_10.setText(_translate("sweepergui", "Všechny sweepy:"))
 
