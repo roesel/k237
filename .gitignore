@@ -48,5 +48,7 @@ coverage.xml
 
 # Sphinx documentation
 docs/_build/
-sweeper/data_temp.txt
-sweeper/last_parameters.pickle
+
+# Mine
+data_temp.txt
+last_parameters.pickle
