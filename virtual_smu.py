@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 import time
+from random import randint
 
 
 class Virtual_SMU:
@@ -20,6 +21,7 @@ class Virtual_SMU:
         if self.sweep_n == self.sweep_len:
             print("Loading DATA for next read!")
             self.stack = self.data
+            self.data = ""
             self.sweep_n = 0
 
         print("read() returned: {}".format(out_stack))
@@ -53,5 +55,5 @@ class Virtual_SMU:
 
         self.sweep_n += 1
 
-        self.data += x_data + ",+000.870E+00,"
+        self.data += x_data + ",+000.{}E+00,".format(randint(100, 999))
         time.sleep(0.1)
