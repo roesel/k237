@@ -438,7 +438,7 @@ class GuiProgram(Ui_sweepergui):
         return output
 
     def dump_data(self):
-        save_file_name = 'C:\Repa\k237\sweeper\data_temp.txt'
+        save_file_name = 'C:\Repa\k237\data_temp.txt'
         try:
             with open(save_file_name, "w", encoding="utf-8") as text_file:
                 text = self.get_export_data()
