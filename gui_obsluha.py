@@ -13,7 +13,6 @@ from k237 import Instrument
 import numpy as np
 import matplotlib
 matplotlib.use("Qt5Agg")
-#matplotlib.rcParams['savefig.directory'] = '/home/david/anaconda'
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import (
     FigureCanvasQTAgg as FigureCanvas,
@@ -102,6 +101,10 @@ class GuiProgram(Ui_sweepergui):
         self.canvas.get_default_filename = self.get_default_filename
         self.canvas.draw()  # Propagate changes to GUI
 
+    def clear_plot(self):
+        self.ax.clear()  # Clear contents of current axis
+        self.canvas.draw()  # Propagate changes to GUI
+
     def put_figure_into_gui(self, fig, ax):
         ''' Creates a figure and places it inside the GUI container. '''
 
@@ -171,7 +174,10 @@ class GuiProgram(Ui_sweepergui):
             'col_time': self.timeCheckBox.checkState(),
 
             'stabilize_time': self.stableSpinBox.value(),
-            'sleep_time': self.sleepSpinBox.value()
+            'sleep_time': self.sleepSpinBox.value(),
+
+            'chk_loop': self.chkLoop.checkState(),
+            'chk_lock_range': self.chkLockRange.checkState(),
         }
 
         # For pickle, the file needs to be opened in binary mode, hence the "wb"
@@ -195,7 +201,6 @@ class GuiProgram(Ui_sweepergui):
             self.linRadioButton.setChecked(parameters_dict['lin_sweep'])
             self.senseLocalRadioButton.setChecked(parameters_dict['sense_local'])
             self.senseRemoteRadioButton.setChecked(parameters_dict['sense_remote'])
-            self.sense_local = sense_local
 
             self.sourceCheckBox.setChecked(parameters_dict['col_source'])
             self.delayCheckBox.setChecked(parameters_dict['col_delay'])
@@ -204,6 +209,9 @@ class GuiProgram(Ui_sweepergui):
 
             self.stableSpinBox.setValue(parameters_dict['stabilize_time'])
             self.sleepSpinBox.setValue(parameters_dict['sleep_time'])
+
+            self.chkLoop.setChecked(parameters_dict['chk_loop'])
+            self.chkLockRange.setChecked(parameters_dict['chk_lock_range'])
 
             self.switch_linear()
 
