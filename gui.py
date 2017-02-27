@@ -11,7 +11,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_sweepergui(object):
     def setupUi(self, sweepergui):
         sweepergui.setObjectName("sweepergui")
-        sweepergui.resize(900, 663)
+        sweepergui.resize(1056, 709)
         sweepergui.setMinimumSize(QtCore.QSize(900, 0))
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap("img/logo_crop.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
