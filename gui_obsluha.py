@@ -243,7 +243,9 @@ class GuiProgram(Ui_sweepergui):
             if (float(sw_min) != float(sw_max) and abs(float(sw_max) - float(sw_min)) > float(step)):
                 # step fits into (start, stop) interval and start != stop
                 test_array = np.arange(float(sw_max), float(sw_min), float(step))
-                if len(test_array) > 1000:
+                if self.chkLoop.checkState() and len(test_array) * 2 > 1000:
+                    return False, "Počet bodů ve sweepu je {} > 1000. \nBuffer by přetekl, zvolte jemnější krok, menší rozsah nebo vypněte obousměrnost měření.".format(len(test_array))
+                elif len(test_array) > 1000:
                     return False, "Počet bodů ve sweepu je {} > 1000. \nBuffer by přetekl, zvolte jemnější krok nebo menší rozsah.".format(len(test_array))
                 else:
                     return True, "OK"
