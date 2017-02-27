@@ -228,23 +228,27 @@ class GuiProgram(Ui_sweepergui):
             if not log_sweep:
                 a = float(step)
         except:
-            return False
+            return False, "Některé parametry se nedají převést na čísla."
 
         # Code
         if log_sweep:
             if (float(sw_min) > 0 and
                 float(sw_max) > 0 and
                     float(sw_min) != float(sw_max)):
-                return True
+                return True, "OK"
             else:
-                return False
+                return False, "Kraje intervalu jsou stejné nebo je alespoň jeden záporný."
         else:
             # lin sweep
-            if (float(sw_min) != float(sw_max) and
-                    abs(float(sw_max) - float(sw_min)) > float(step)):
-                return True
+            if (float(sw_min) != float(sw_max) and abs(float(sw_max) - float(sw_min)) > float(step)):
+                # step fits into (start, stop) interval and start != stop
+                test_array = np.arange(float(sw_max), float(sw_min), float(step))
+                if len(test_array) > 1000:
+                    return False, "Počet bodů ve sweepu je {} > 1000. \nBuffer by přetekl, zvolte jemnější krok nebo menší rozsah.".format(len(test_array))
+                else:
+                    return True, "OK"
             else:
-                return False
+                return False, "Kraje intervalu se rovnají, nebo je krok větší než rozsah."
 
     def stopFunc(self):
         print('ABORT! Attempted to STOP sweep!')
@@ -294,27 +298,28 @@ class GuiProgram(Ui_sweepergui):
         if col_time:
             self.cols += 8
 
-        if self.validateInput(sw_min, sw_max, decade, delay, log_sweep, step):
+        input_valid, err = self.validateInput(sw_min, sw_max, decade, delay, log_sweep, step)
+        if input_valid:
             self.save_parameters()
             self.measure(sw_min, sw_max, decade, delay, log_sweep, step, n)
         else:
-            print('Input failed validation.')
-            self.show_notification('failed_validation')
+            self.show_notification(err)
 
-    def show_notification(self, code):
-        if code == 'failed_validation':
-            msg = QtWidgets.QMessageBox()
-            msg.setIcon(QtWidgets.QMessageBox.Warning)
-            msg.setText("Chybné parametry sweepu.")
-            msg.setInformativeText("")
-            msg.setWindowTitle("Sweeper - varování")
-            msg.setDetailedText("TODO")
-            msg.exec_()
+    def show_notification(self, err):
+        msg = QtWidgets.QMessageBox()
+        msg.setIcon(QtWidgets.QMessageBox.Warning)
+        msg.setText("Chybné parametry sweepu.")
+        msg.setInformativeText(err)
+        msg.setWindowTitle("Sweeper - varování")
+        msg.exec_()
 
     def measure(self, sw_min, sw_max, decade, delay, log_sweep, step, n):
         ''' Spustí měření s již validovanými parametry. '''
         # Disable UI
         self.enable_ui(False)
+
+        # Smaže aktuální graf
+        self.clear_plot()
 
         # Declare Export not done on this sweep
         self.exportButton.setText('Export')
