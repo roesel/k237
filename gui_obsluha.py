@@ -355,6 +355,7 @@ class GuiProgram(Ui_sweepergui):
 
         data = []
         self.full_data = []
+        self.np_data = []
         n_hotovych_mereni = 0
         for mereni in range(n):
             if self.stop:
@@ -362,8 +363,10 @@ class GuiProgram(Ui_sweepergui):
             output = self.run_sweep()
             if output:
                 sweep_results = misc.nice_format(output, cols=self.cols)
-                data.append(misc.unpack(sweep_results, cols=self.cols))
+                unpacked_results = misc.unpack(sweep_results, cols=self.cols)
+                data.append(unpacked_results)
                 self.full_data.append(sweep_results)
+                self.np_data = misc.pack_data(self.np_data, unpacked_results)
 
                 print('Ukladam docasna data...')
                 self.dump_data()
@@ -521,9 +524,8 @@ class GuiProgram(Ui_sweepergui):
 
         # Vlastní uložení souboru
         try:
-            with open(save_file_name, "w", encoding="utf-8") as text_file:
-                text = self.get_export_data()
-                text_file.write(text)
+            np.savetxt(save_file_name, self.np_data, fmt='%.4e',
+                       header=self.get_measurement_parameters(), delimiter='\t')
 
             # Update GUI
             self.exportButton.setText('Export ✔')
@@ -537,39 +539,40 @@ class GuiProgram(Ui_sweepergui):
 
     def get_measurement_parameters(self):
         out = ''
-        out += "# Sweep ID: {}\n".format(self.sweep_id)
+        out += "Sweep ID: {}\n".format(self.sweep_id)
         if self.log_sweep:
-            out += "# Log sweep:\n"
-            out += "# Rozsah (min, max) [A]: {}, {}\n".format(self.startEdit.text(),
-                                                              self.endEdit.text()
-                                                              )
-            out += "# Bodů na dekádu [-]: {}\n".format(
+            out += "Log sweep:\n"
+            out += "Rozsah (min, max) [A]: {}, {}\n".format(self.startEdit.text(),
+                                                            self.endEdit.text()
+                                                            )
+            out += "Bodu na dekadu [-]: {}\n".format(
                 self.decade_combo_values[self.decadeComboBox.currentIndex()])
         else:
-            out += "# Linear sweep\n"
-            out += "# Rozsah (min, max, points) [A]: {}, {}, {}\n".format(self.startEdit.text(),
-                                                                          self.endEdit.text(),
-                                                                          self.stepEdit.text()
-                                                                          )
+            out += "Linear sweep\n"
+            out += "Rozsah (min, max, points) [A]: {}, {}, {}\n".format(self.startEdit.text(),
+                                                                        self.endEdit.text(),
+                                                                        self.stepEdit.text()
+                                                                        )
 
-        out += "# Delay [ms]: {}\n".format(self.delaySpinBox.value())
-        out += "# Počet charakteristik [-]: {}\n".format(self.pocetMereniBox.value())
+        out += "Delay [ms]: {}\n".format(self.delaySpinBox.value())
+        out += "Pocet charakteristik [-]: {}\n".format(self.pocetMereniBox.value())
 
         if self.sense_local:
-            out += "# Sense: local\n"
+            out += "Sense: local\n"
         else:
-            out += "# Sense: remote\n"
+            out += "Sense: remote\n"
 
-        out += "# Sloupce (Source, Measure, Delay, Time): {} {} {} {}\n".format(int(self.sourceCheckBox.checkState() / 2),
-                                                                                int(self.measureCheckBox.checkState(
-                                                                                ) / 2),
-                                                                                int(self.delayCheckBox.checkState(
-                                                                                ) / 2),
-                                                                                int(self.timeCheckBox.checkState(
-                                                                                ) / 2)
-                                                                                )
+        out += "Sloupce (Source, Measure, Delay, Time): {} {} {} {}\n".format(int(self.sourceCheckBox.checkState() / 2),
+                                                                              int(self.measureCheckBox.checkState(
+                                                                              ) / 2),
+                                                                              int(self.delayCheckBox.checkState(
+                                                                              ) / 2),
+                                                                              int(self.timeCheckBox.checkState(
+                                                                              ) / 2)
+                                                                              )
 
-        out += "# Uvodní DC stabilizace [s]: {}\n".format(self.stableSpinBox.value())
-        out += "# Stabilizace [s]: {}\n".format(self.sleepSpinBox.value())
+        out += "Uvodni DC stabilizace [s]: {}\n".format(self.stableSpinBox.value())
+        out += "Stabilizace [s]: {}\n".format(self.sleepSpinBox.value())
+        out += "\nI[A] (x)\tU[V .e-3] (y1, y2, ...) "
 
         return out
