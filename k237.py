@@ -81,6 +81,12 @@ class Instrument:
         '''
         return self.SMU.read()
 
+    def read_lines(self):
+        out = ""
+        for i in range(1000):
+            out += self.SMU.read() + "\n"
+        return out
+
     def set_source_and_function(self, source, function):
         '''
         Čitelnější nastavení zdroje/měřené veličiny.
