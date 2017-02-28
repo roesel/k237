@@ -573,10 +573,12 @@ class GuiProgram(Ui_sweepergui):
             self.startBtn.clicked.disconnect()
             self.startBtn.clicked.connect(self.startFunc)
             self.startBtn.setText("Start")
+            self.exportButton.setFocus()
         else:
             self.startBtn.clicked.disconnect()
             self.startBtn.clicked.connect(self.stopFunc)
             self.startBtn.setText("Abort")
+            self.startBtn.setFocus()
             self.exportButton.setText('Export')
 
     def artSleep(self, sleepTime):

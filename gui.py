@@ -11,7 +11,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_sweepergui(object):
     def setupUi(self, sweepergui):
         sweepergui.setObjectName("sweepergui")
-        sweepergui.resize(1056, 709)
+        sweepergui.resize(1056, 732)
         sweepergui.setMinimumSize(QtCore.QSize(900, 0))
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap("img/logo_crop.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
@@ -196,6 +196,26 @@ class Ui_sweepergui(object):
 
         self.retranslateUi(sweepergui)
         QtCore.QMetaObject.connectSlotsByName(sweepergui)
+        sweepergui.setTabOrder(self.startBtn, self.startEdit)
+        sweepergui.setTabOrder(self.startEdit, self.endEdit)
+        sweepergui.setTabOrder(self.endEdit, self.stepEdit)
+        sweepergui.setTabOrder(self.stepEdit, self.delaySpinBox)
+        sweepergui.setTabOrder(self.delaySpinBox, self.decadeComboBox)
+        sweepergui.setTabOrder(self.decadeComboBox, self.chkAutorange)
+        sweepergui.setTabOrder(self.chkAutorange, self.pocetMereniBox)
+        sweepergui.setTabOrder(self.pocetMereniBox, self.stableSpinBox)
+        sweepergui.setTabOrder(self.stableSpinBox, self.sleepSpinBox)
+        sweepergui.setTabOrder(self.sleepSpinBox, self.chkLockRange)
+        sweepergui.setTabOrder(self.chkLockRange, self.logRadioButton)
+        sweepergui.setTabOrder(self.logRadioButton, self.linRadioButton)
+        sweepergui.setTabOrder(self.linRadioButton, self.chkLoop)
+        sweepergui.setTabOrder(self.chkLoop, self.senseLocalRadioButton)
+        sweepergui.setTabOrder(self.senseLocalRadioButton, self.senseRemoteRadioButton)
+        sweepergui.setTabOrder(self.senseRemoteRadioButton, self.sourceCheckBox)
+        sweepergui.setTabOrder(self.sourceCheckBox, self.measureCheckBox)
+        sweepergui.setTabOrder(self.measureCheckBox, self.delayCheckBox)
+        sweepergui.setTabOrder(self.delayCheckBox, self.timeCheckBox)
+        sweepergui.setTabOrder(self.timeCheckBox, self.exportButton)
 
     def retranslateUi(self, sweepergui):
         _translate = QtCore.QCoreApplication.translate

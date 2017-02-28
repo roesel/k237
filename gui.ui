@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1056</width>
-    <height>709</height>
+    <height>732</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -413,6 +413,29 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>startBtn</tabstop>
+  <tabstop>startEdit</tabstop>
+  <tabstop>endEdit</tabstop>
+  <tabstop>stepEdit</tabstop>
+  <tabstop>delaySpinBox</tabstop>
+  <tabstop>decadeComboBox</tabstop>
+  <tabstop>chkAutorange</tabstop>
+  <tabstop>pocetMereniBox</tabstop>
+  <tabstop>stableSpinBox</tabstop>
+  <tabstop>sleepSpinBox</tabstop>
+  <tabstop>chkLockRange</tabstop>
+  <tabstop>logRadioButton</tabstop>
+  <tabstop>linRadioButton</tabstop>
+  <tabstop>chkLoop</tabstop>
+  <tabstop>senseLocalRadioButton</tabstop>
+  <tabstop>senseRemoteRadioButton</tabstop>
+  <tabstop>sourceCheckBox</tabstop>
+  <tabstop>measureCheckBox</tabstop>
+  <tabstop>delayCheckBox</tabstop>
+  <tabstop>timeCheckBox</tabstop>
+  <tabstop>exportButton</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
