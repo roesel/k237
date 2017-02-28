@@ -235,9 +235,16 @@ class GuiProgram(Ui_sweepergui):
             self.cols += 8
 
         input_valid, err = self.validateInput(sw_min, sw_max, decade, delay, log_sweep, step)
+        if self.chkAutorange.checkState():
+            sweep_range = '0'
+        else:
+            sweep_range = str(misc.get_range_number(float(sw_min), float(sw_max)))
+            if sweep_range == '0':
+                print('POZOR: Manualni nastaveni range selhalo, prilis vysoke proudy?')
+
         if input_valid:
             self.save_parameters()
-            self.measure(sw_min, sw_max, decade, delay, log_sweep, step, n)
+            self.measure(sw_min, sw_max, decade, delay, log_sweep, step, n, sweep_range)
         else:
             self.show_notification(err)
 
@@ -246,7 +253,7 @@ class GuiProgram(Ui_sweepergui):
     # ------------------------------------------------------------------------
     # ------------------------------------------------------------------------
 
-    def measure(self, sw_min, sw_max, decade, delay, log_sweep, step, n):
+    def measure(self, sw_min, sw_max, decade, delay, log_sweep, step, n, sweep_range):
         ''' Spustí měření s již validovanými parametry. '''
         # Disable UI
         self.enable_ui(False)
@@ -276,13 +283,13 @@ class GuiProgram(Ui_sweepergui):
         self.inst.write("G" + str(self.cols) + ",2,2X")
 
         if self.log_sweep:
-            self.inst.write("Q2," + sw_min + "," + sw_max + "," + decade + ",0," + delay + "X")
+            self.inst.write("Q2," + sw_min + "," + sw_max + "," + decade + "," + sweep_range + "," + delay + "X")
             if self.chkLoop.checkState():
-                self.inst.write("Q8," + sw_max + "," + sw_min + "," + decade + ",0," + delay + "X")
+                self.inst.write("Q8," + sw_max + "," + sw_min + "," + decade + "," + sweep_range + "," + delay + "X")
         else:
-            self.inst.write("Q1," + sw_min + "," + sw_max + "," + step + ",0," + delay + "X")
+            self.inst.write("Q1," + sw_min + "," + sw_max + "," + step + "," + sweep_range + "," + delay + "X")
             if self.chkLoop.checkState():
-                self.inst.write("Q7," + sw_max + "," + sw_min + "," + step + ",0," + delay + "X")
+                self.inst.write("Q7," + sw_max + "," + sw_min + "," + step + "," + sweep_range + "," + delay + "X")
 
         data = []
         self.full_data = []
@@ -479,6 +486,7 @@ class GuiProgram(Ui_sweepergui):
 
             'chk_loop': self.chkLoop.checkState(),
             'chk_lock_range': self.chkLockRange.checkState(),
+            'chk_autorange': self.chkAutorange.checkState(),
         }
 
         # For pickle, the file needs to be opened in binary mode, hence the "wb"
@@ -513,6 +521,7 @@ class GuiProgram(Ui_sweepergui):
 
             self.chkLoop.setChecked(parameters_dict['chk_loop'])
             self.chkLockRange.setChecked(parameters_dict['chk_lock_range'])
+            self.chkAutorange.setChecked(parameters_dict['chk_autorange'])
 
             self.switch_linear()
 
@@ -550,6 +559,7 @@ class GuiProgram(Ui_sweepergui):
             self.stableSpinBox,
             self.sleepSpinBox,
             self.chkLoop,
+            self.chkAutorange,
             self.exportButton,
         ]
 

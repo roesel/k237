@@ -38,6 +38,7 @@ def unpack(data, cols=5):
 
 
 def append_output_file(data):
+    '''Pravděpodobně se dá smazat.'''
     # zapsání dat na konec výstupního souboru
     with open("sweep_data.txt", "a") as text_file:
         text_file.write('======== SWEEP START ========\n')
@@ -52,3 +53,31 @@ def pack_data(backpack, data):
         return np.vstack((backpack.T, y)).T
     else:
         return np.vstack((x, y)).T
+
+
+def get_range_number(sw_min, sw_max):
+    '''Returns source range number for I-source as per page 65 of the Quick reference guide.'''
+    range_number = 0
+    a = max(abs(sw_min), abs(sw_max))
+    if a < 1e-9:
+        range_number = 1
+    elif a < 1e-8:
+        range_number = 2
+    elif a < 1e-7:
+        range_number = 3
+    elif a < 1e-6:
+        range_number = 4
+    elif a < 1e-5:
+        range_number = 5
+    elif a < 1e-4:
+        range_number = 6
+    elif a < 1e-3:
+        range_number = 7
+    elif a < 1e-2:
+        range_number = 8
+    elif a < 1e-1:
+        range_number = 9
+    else:
+        range_number = 0
+
+    return range_number
