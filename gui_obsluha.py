@@ -57,15 +57,10 @@ class GuiProgram(Ui_sweepergui):
         #self.inst = Instrument('GPIB0::17::INSTR', visa_location='C:\WINDOWS\SysWOW64\\visa32.dll')
         self.inst = Instrument('GPIB0::17::INSTR', virtual=False)
 
-    def artSleep(self, sleepTime):
-        """
-        Čeká čas sleepTime v sekundách, zatím ale každých 50 milisekund řeší
-        akce, o které se někdo pokoušel v GUI.
-        """
-        stop_time = QtCore.QTime()
-        stop_time.restart()
-        while stop_time.elapsed() < sleepTime * 1000:
-            QtWidgets.QApplication.processEvents(QtCore.QEventLoop.AllEvents, 50)
+    # --- PLOTTING -----------------------------------------------------------
+    # ------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     def plot_data(self, data):
         ''' Plots the provided data onto the figure in the GUI. '''
@@ -154,71 +149,10 @@ class GuiProgram(Ui_sweepergui):
 
         return default_filename
 
-    def save_parameters(self):
-        parameters_dict = {
-            'sw_min': str(self.startEdit.text()),
-            'sw_max': str(self.endEdit.text()),
-            'step': str(self.stepEdit.text()),
-            'delay': int(self.delaySpinBox.value()),
-            'decade': int(self.decadeComboBox.currentIndex()),
-            'n': int(self.pocetMereniBox.value()),
-
-            'log_sweep': self.logRadioButton.isChecked(),
-            'lin_sweep': self.linRadioButton.isChecked(),
-            'sense_local': self.senseLocalRadioButton.isChecked(),
-            'sense_remote': self.senseRemoteRadioButton.isChecked(),
-
-            'col_source': self.sourceCheckBox.checkState(),
-            'col_delay': self.delayCheckBox.checkState(),
-            'col_measure': self.measureCheckBox.checkState(),
-            'col_time': self.timeCheckBox.checkState(),
-
-            'stabilize_time': self.stableSpinBox.value(),
-            'sleep_time': self.sleepSpinBox.value(),
-
-            'chk_loop': self.chkLoop.checkState(),
-            'chk_lock_range': self.chkLockRange.checkState(),
-        }
-
-        # For pickle, the file needs to be opened in binary mode, hence the "wb"
-        with open("last_parameters.pickle", "wb") as params_file:
-            pickle.dump(parameters_dict, params_file)
-
-    def load_parameters(self):
-        try:
-            # For pickle, the file needs to be opened in binary mode, hence the "wb"
-            with open("last_parameters.pickle", "rb") as params_file:
-                parameters_dict = pickle.load(params_file)
-
-            self.startEdit.setText(parameters_dict['sw_min'])
-            self.endEdit.setText(parameters_dict['sw_max'])
-            self.stepEdit.setText(parameters_dict['step'])
-            self.delaySpinBox.setValue(parameters_dict['delay'])
-            self.decadeComboBox.setCurrentIndex(parameters_dict['decade'])
-            self.pocetMereniBox.setValue(parameters_dict['n'])
-
-            self.logRadioButton.setChecked(parameters_dict['log_sweep'])
-            self.linRadioButton.setChecked(parameters_dict['lin_sweep'])
-            self.senseLocalRadioButton.setChecked(parameters_dict['sense_local'])
-            self.senseRemoteRadioButton.setChecked(parameters_dict['sense_remote'])
-
-            self.sourceCheckBox.setChecked(parameters_dict['col_source'])
-            self.delayCheckBox.setChecked(parameters_dict['col_delay'])
-            self.measureCheckBox.setChecked(parameters_dict['col_measure'])
-            self.timeCheckBox.setChecked(parameters_dict['col_time'])
-
-            self.stableSpinBox.setValue(parameters_dict['stabilize_time'])
-            self.sleepSpinBox.setValue(parameters_dict['sleep_time'])
-
-            self.chkLoop.setChecked(parameters_dict['chk_loop'])
-            self.chkLockRange.setChecked(parameters_dict['chk_lock_range'])
-
-            self.switch_linear()
-
-            print("Nacteni poslednich parametru uspesne! :)")
-
-        except:
-            print("Nacteni poslednich parametru selhalo. :(")
+    # --- GUI collecting and starting MEASUREMENTS ---------------------------
+    # ------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     def validateInput(self, sw_min, sw_max, decade, delay, log_sweep, step):
         # Unit testing :P
@@ -307,13 +241,10 @@ class GuiProgram(Ui_sweepergui):
         else:
             self.show_notification(err)
 
-    def show_notification(self, err):
-        msg = QtWidgets.QMessageBox()
-        msg.setIcon(QtWidgets.QMessageBox.Warning)
-        msg.setText("Chybné parametry sweepu.")
-        msg.setInformativeText(err)
-        msg.setWindowTitle("Sweeper - varování")
-        msg.exec_()
+    # --- ACTUAL MEASUREMENTS ------------------------------------------------
+    # ------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     def measure(self, sw_min, sw_max, decade, delay, log_sweep, step, n):
         ''' Spustí měření s již validovanými parametry. '''
@@ -435,53 +366,10 @@ class GuiProgram(Ui_sweepergui):
         self.inst.trigger()
         self.artSleep(stabilize_time)
 
-    def switch_linear(self):
-        log_sweep = self.logRadioButton.isChecked()
-        lin_sweep = self.linRadioButton.isChecked()
-        if log_sweep:
-            self.stepEdit.setEnabled(False)
-            self.decadeComboBox.setEnabled(True)
-        else:
-            self.decadeComboBox.setEnabled(False)
-            self.stepEdit.setEnabled(True)
-
-    def enable_ui(self, status):
-        ui_elements = [
-            self.startEdit,
-            self.endEdit,
-            self.stepEdit,
-            self.delaySpinBox,
-            self.decadeComboBox,
-            self.pocetMereniBox,
-            self.logRadioButton,
-            self.linRadioButton,
-            self.senseLocalRadioButton,
-            self.senseRemoteRadioButton,
-            self.sourceCheckBox,
-            self.delayCheckBox,
-            self.measureCheckBox,
-            self.timeCheckBox,
-            self.stableSpinBox,
-            self.sleepSpinBox,
-            self.chkLoop,
-            self.exportButton,
-        ]
-
-        for element in ui_elements:
-            element.setEnabled(status)
-
-        if status:
-            self.switch_linear()
-
-        if status:
-            self.startBtn.clicked.disconnect()
-            self.startBtn.clicked.connect(self.startFunc)
-            self.startBtn.setText("Start")
-        else:
-            self.startBtn.clicked.disconnect()
-            self.startBtn.clicked.connect(self.stopFunc)
-            self.startBtn.setText("Abort")
-            self.exportButton.setText('Export')
+    # --- EXPORT and DATA operations -----------------------------------------
+    # ------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     def dump_data(self):
         save_file_name = 'C:\Repa\k237\data_temp.txt'
@@ -561,3 +449,140 @@ class GuiProgram(Ui_sweepergui):
         out += "\nI[A] (x)\tU[V .e-3] (y1, y2, ...) "
 
         return out
+
+    # --- GUI parameters and ENABLE/DISABLE ----------------------------------
+    # ------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
+
+    def save_parameters(self):
+        parameters_dict = {
+            'sw_min': str(self.startEdit.text()),
+            'sw_max': str(self.endEdit.text()),
+            'step': str(self.stepEdit.text()),
+            'delay': int(self.delaySpinBox.value()),
+            'decade': int(self.decadeComboBox.currentIndex()),
+            'n': int(self.pocetMereniBox.value()),
+
+            'log_sweep': self.logRadioButton.isChecked(),
+            'lin_sweep': self.linRadioButton.isChecked(),
+            'sense_local': self.senseLocalRadioButton.isChecked(),
+            'sense_remote': self.senseRemoteRadioButton.isChecked(),
+
+            'col_source': self.sourceCheckBox.checkState(),
+            'col_delay': self.delayCheckBox.checkState(),
+            'col_measure': self.measureCheckBox.checkState(),
+            'col_time': self.timeCheckBox.checkState(),
+
+            'stabilize_time': self.stableSpinBox.value(),
+            'sleep_time': self.sleepSpinBox.value(),
+
+            'chk_loop': self.chkLoop.checkState(),
+            'chk_lock_range': self.chkLockRange.checkState(),
+        }
+
+        # For pickle, the file needs to be opened in binary mode, hence the "wb"
+        with open("last_parameters.pickle", "wb") as params_file:
+            pickle.dump(parameters_dict, params_file)
+
+    def load_parameters(self):
+        try:
+            # For pickle, the file needs to be opened in binary mode, hence the "wb"
+            with open("last_parameters.pickle", "rb") as params_file:
+                parameters_dict = pickle.load(params_file)
+
+            self.startEdit.setText(parameters_dict['sw_min'])
+            self.endEdit.setText(parameters_dict['sw_max'])
+            self.stepEdit.setText(parameters_dict['step'])
+            self.delaySpinBox.setValue(parameters_dict['delay'])
+            self.decadeComboBox.setCurrentIndex(parameters_dict['decade'])
+            self.pocetMereniBox.setValue(parameters_dict['n'])
+
+            self.logRadioButton.setChecked(parameters_dict['log_sweep'])
+            self.linRadioButton.setChecked(parameters_dict['lin_sweep'])
+            self.senseLocalRadioButton.setChecked(parameters_dict['sense_local'])
+            self.senseRemoteRadioButton.setChecked(parameters_dict['sense_remote'])
+
+            self.sourceCheckBox.setChecked(parameters_dict['col_source'])
+            self.delayCheckBox.setChecked(parameters_dict['col_delay'])
+            self.measureCheckBox.setChecked(parameters_dict['col_measure'])
+            self.timeCheckBox.setChecked(parameters_dict['col_time'])
+
+            self.stableSpinBox.setValue(parameters_dict['stabilize_time'])
+            self.sleepSpinBox.setValue(parameters_dict['sleep_time'])
+
+            self.chkLoop.setChecked(parameters_dict['chk_loop'])
+            self.chkLockRange.setChecked(parameters_dict['chk_lock_range'])
+
+            self.switch_linear()
+
+            print("Nacteni poslednich parametru uspesne! :)")
+
+        except:
+            print("Nacteni poslednich parametru selhalo. :(")
+
+    def switch_linear(self):
+        log_sweep = self.logRadioButton.isChecked()
+        lin_sweep = self.linRadioButton.isChecked()
+        if log_sweep:
+            self.stepEdit.setEnabled(False)
+            self.decadeComboBox.setEnabled(True)
+        else:
+            self.decadeComboBox.setEnabled(False)
+            self.stepEdit.setEnabled(True)
+
+    def enable_ui(self, status):
+        ui_elements = [
+            self.startEdit,
+            self.endEdit,
+            self.stepEdit,
+            self.delaySpinBox,
+            self.decadeComboBox,
+            self.pocetMereniBox,
+            self.logRadioButton,
+            self.linRadioButton,
+            self.senseLocalRadioButton,
+            self.senseRemoteRadioButton,
+            self.sourceCheckBox,
+            self.delayCheckBox,
+            self.measureCheckBox,
+            self.timeCheckBox,
+            self.stableSpinBox,
+            self.sleepSpinBox,
+            self.chkLoop,
+            self.exportButton,
+        ]
+
+        for element in ui_elements:
+            element.setEnabled(status)
+
+        if status:
+            self.switch_linear()
+
+        if status:
+            self.startBtn.clicked.disconnect()
+            self.startBtn.clicked.connect(self.startFunc)
+            self.startBtn.setText("Start")
+        else:
+            self.startBtn.clicked.disconnect()
+            self.startBtn.clicked.connect(self.stopFunc)
+            self.startBtn.setText("Abort")
+            self.exportButton.setText('Export')
+
+    def artSleep(self, sleepTime):
+        """
+        Čeká čas sleepTime v sekundách, zatím ale každých 50 milisekund řeší
+        akce, o které se někdo pokoušel v GUI.
+        """
+        stop_time = QtCore.QTime()
+        stop_time.restart()
+        while stop_time.elapsed() < sleepTime * 1000:
+            QtWidgets.QApplication.processEvents(QtCore.QEventLoop.AllEvents, 50)
+
+    def show_notification(self, err):
+        msg = QtWidgets.QMessageBox()
+        msg.setIcon(QtWidgets.QMessageBox.Warning)
+        msg.setText("Chybné parametry sweepu.")
+        msg.setInformativeText(err)
+        msg.setWindowTitle("Sweeper - varování")
+        msg.exec_()
