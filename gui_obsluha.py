@@ -483,26 +483,11 @@ class GuiProgram(Ui_sweepergui):
             self.startBtn.setText("Abort")
             self.exportButton.setText('Export')
 
-    def get_export_data(self):
-        output = ""
-        output += '# ======== Sweep ID: ' + self.sweep_id + ' ========' + '\n'
-        output += '# ======== ' + str(len(self.full_data)) + ' sweeps' + ' ========' + '\n'
-
-        output += self.get_measurement_parameters()
-
-        for data in self.full_data:
-            output += '# ======== SWEEP START ========\n'
-            output += data.replace(',', '    ')
-            output += '# ======== SWEEP END ========\n\n'
-
-        return output
-
     def dump_data(self):
         save_file_name = 'C:\Repa\k237\data_temp.txt'
         try:
-            with open(save_file_name, "w", encoding="utf-8") as text_file:
-                text = self.get_export_data()
-                text_file.write(text)
+            np.savetxt(save_file_name, self.np_data, fmt='%.4e',
+                       header=self.get_measurement_parameters() + "\nPOZOR, prubezne ukladana data mohou byt nekompletni", delimiter='\t')
         except:
             print("Nouzovy dump se nepovedl.")
 
