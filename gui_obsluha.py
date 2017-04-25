@@ -283,13 +283,17 @@ class GuiProgram(Ui_sweepergui):
         self.inst.write("G" + str(self.cols) + ",2,2X")
 
         if self.log_sweep:
-            self.inst.write("Q2," + sw_min + "," + sw_max + "," + decade + "," + sweep_range + "," + delay + "X")
+            self.inst.write("Q2," + sw_min + "," + sw_max + "," +
+                            decade + "," + sweep_range + "," + delay + "X")
             if self.chkLoop.checkState():
-                self.inst.write("Q8," + sw_max + "," + sw_min + "," + decade + "," + sweep_range + "," + delay + "X")
+                self.inst.write("Q8," + sw_max + "," + sw_min + "," +
+                                decade + "," + sweep_range + "," + delay + "X")
         else:
-            self.inst.write("Q1," + sw_min + "," + sw_max + "," + step + "," + sweep_range + "," + delay + "X")
+            self.inst.write("Q1," + sw_min + "," + sw_max + "," +
+                            step + "," + sweep_range + "," + delay + "X")
             if self.chkLoop.checkState():
-                self.inst.write("Q7," + sw_max + "," + sw_min + "," + step + "," + sweep_range + "," + delay + "X")
+                self.inst.write("Q7," + sw_max + "," + sw_min + "," +
+                                step + "," + sweep_range + "," + delay + "X")
 
         data = []
         self.full_data = []
