@@ -106,7 +106,10 @@ init_file()
 
 save_freq = 10
 try:
-    while True:
+    limit = 100
+    i = 0
+    while i < limit:
+        i += 1
         line = inst.read()
         x, y = line.split(',')
         t_data.append((time.time() - start))
@@ -124,6 +127,10 @@ try:
             plt.pause(0.01)
         if num_measurements % save_freq == 0:
             add_to_file(y_data[-save_freq:])
+    print('100!')
+    rollback()
+    get_stats(y_data)
+
 except KeyboardInterrupt:
     rollback()
     get_stats(y_data)
