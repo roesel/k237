@@ -40,6 +40,8 @@ inst.write("H0X")                                   # Immediate trigger
 # Output format (source+measure, no prefix or suffix, one line of DC data per talk)
 inst.write("G5,2,0X")
 
+inst.write("W0X")  # disable default delay
+
 inst.write("B" + str(current) + ",0,0X")   # Bias current , auto range, no delay
 inst.write("N1X")  # Operate
 
@@ -92,6 +94,7 @@ def get_stats(data):
     end = time.time()
     diff = end - start
     print('Elapsed time: ' + prettytime(diff) + '.')
+    print("{} datapoints aquired.".format(len(data)))
     print('Each value took {:.2f} s.'.format(diff / num_measurements))
     print('Measurement frequency: {:.2f} meas/s.'.format(num_measurements / diff))
     print("End Stats -------------\n")
@@ -108,7 +111,10 @@ save_freq = 10
 try:
     limit = 100
     i = 0
-    while i < limit:
+    # while i < limit:
+    run = True
+    print("Starting to measure.")
+    while run:
         i += 1
         line = inst.read()
         x, y = line.split(',')
@@ -127,7 +133,10 @@ try:
             plt.pause(0.01)
         if num_measurements % save_freq == 0:
             add_to_file(y_data[-save_freq:])
-    print('100!')
+        if time.time() - start > 30:
+            run = False
+    print("Measurement done.")
+
     rollback()
     get_stats(y_data)
 

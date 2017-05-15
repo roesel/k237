@@ -283,6 +283,7 @@ class GuiProgram(Ui_sweepergui):
         self.inst.write("G" + str(self.cols) + ",2,2X")
 
         if self.log_sweep:
+            sweep_range = "2"  # TEMP FIX
             self.inst.write("Q2," + sw_min + "," + sw_max + "," +
                             decade + "," + sweep_range + "," + delay + "X")
             if self.chkLoop.checkState():
