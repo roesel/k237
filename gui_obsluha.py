@@ -55,7 +55,7 @@ class GuiProgram(Ui_sweepergui):
 
         # Připojení k instrumentu
         #self.inst = Instrument('GPIB0::17::INSTR', visa_location='C:\WINDOWS\SysWOW64\\visa32.dll')
-        self.inst = Instrument('GPIB0::17::INSTR', virtual=False)
+        self.inst = Instrument('GPIB0::17::INSTR', virtual=True)
 
     # --- PLOTTING -----------------------------------------------------------
     # ------------------------------------------------------------------------
@@ -200,9 +200,20 @@ class GuiProgram(Ui_sweepergui):
         self.sweep_id = '{0:%Y-%m-%d_%H-%M-%S}'.format(datetime.datetime.now())
         self.save_filename = False
 
+        sense_local = self.senseLocalRadioButton.isChecked()
+        sense_remote = self.senseRemoteRadioButton.isChecked()
+        self.sense_local = sense_local
+
         sw_min = str(self.startEdit.text())
         sw_max = str(self.endEdit.text())
         step = str(self.stepEdit.text())
+
+        # Pokud je zapojený zesilovač
+        if not self.sense_local:
+            sw_min = str(float(sw_min) * 1e3)
+            sw_max = str(float(sw_max) * 1e3)
+            step = str(float(step) * 1e3)
+
         delay = str(self.delaySpinBox.value())
         decade = str(self.decadeComboBox.currentIndex())
         n = self.pocetMereniBox.value()
@@ -214,10 +225,6 @@ class GuiProgram(Ui_sweepergui):
         log_sweep = self.logRadioButton.isChecked()
         lin_sweep = self.linRadioButton.isChecked()
         self.log_sweep = log_sweep
-
-        sense_local = self.senseLocalRadioButton.isChecked()
-        sense_remote = self.senseRemoteRadioButton.isChecked()
-        self.sense_local = sense_local
 
         col_source = self.sourceCheckBox.checkState()
         col_delay = self.delayCheckBox.checkState()
@@ -307,6 +314,8 @@ class GuiProgram(Ui_sweepergui):
                 break
             output = self.run_sweep()
             if output:
+                if not self.sense_local:
+                    output = misc.shift_data(output, cols=self.cols, order=-3)
                 sweep_results = misc.nice_format(output, cols=self.cols)
                 unpacked_results = misc.unpack(sweep_results, cols=self.cols)
                 data.append(unpacked_results)

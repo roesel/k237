@@ -3,6 +3,23 @@ import numpy as np
 from io import StringIO   # StringIO behaves like a file object
 
 
+def shift_number(s, order):
+    split = s.split('E')
+    original_order = int(split[-1])
+    new_order = original_order + order
+    split[-1] = "{:+03d}".format(new_order)
+    return 'E'.join(split)
+
+
+def shift_data(raw_data, cols=5, shift=-3):
+    '''Přenásobí hodnoty proudu o >shift< řádů (kompenzace děliče).'''
+    a = raw_data.split(',')
+    x_frequencies = {5: 2, 7: 3, 13: 3, 15: 4}
+    freq = x_frequencies[cols]
+    a[::freq] = [shift_number(c, shift) for c in a[::freq]]
+    return ','.join(a)
+
+
 def nice_format(raw_data, cols=5):
     '''Zpracuje data co vrátil stroj.'''
     raw_data = raw_data.replace('\r\n', '\n')
