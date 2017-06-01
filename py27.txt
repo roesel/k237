@@ -1,0 +1,2 @@
+set CONDA_FORCE_32BIT=1
+conda create -n py27_32 python=2.7

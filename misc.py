@@ -81,3 +81,17 @@ def get_range_number(sw_min, sw_max):
         range_number = 0
 
     return range_number
+
+
+def log_delay(current, pF, p_decade):
+    ''' y = a * x^-b '''
+    a = pF / p_decade
+    b = 1.1
+    return a * current**(-b)
+
+
+def log_delays(currents, pF, p_decade):
+    ''' Currents needs to be a numpy array. '''
+    currents = currents * 1e12
+    delays = [int(log_delay(x, pF, p_decade) * 1e3) for x in currents]
+    return delays
