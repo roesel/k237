@@ -112,3 +112,10 @@ class Instrument:
 
         # Odesílání nastavení zařízení
         self.SMU.write('F' + source_num + ',' + function_num + 'X')
+
+    def set_custom_delays(self, delays):
+        print("Setting custom delays.")
+        for i in range(len(delays)):
+            print('A,,{},{},X'.format(delays[i], i + 1))
+            self.SMU.write('A,,{},{},X'.format(delays[i], i + 1))
+        print("Custom delays set?")

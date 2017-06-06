@@ -3,12 +3,13 @@ import sys
 import os
 import time
 import datetime
-import misc
 import pickle
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 from gui import Ui_sweepergui
 from k237 import Instrument
+import delays
+import misc
 
 import numpy as np
 import matplotlib
@@ -40,6 +41,8 @@ class GuiProgram(Ui_sweepergui):
         self.startBtn.clicked.connect(self.startFunc)
         self.logRadioButton.clicked.connect(self.switch_linear)
         self.linRadioButton.clicked.connect(self.switch_linear)
+        self.dynamicDelayRadio.clicked.connect(self.switch_dynamic_delay)
+        self.constantDelayRadio.clicked.connect(self.switch_dynamic_delay)
 
         # Populate comboBox
         self.decadeComboBox.clear()
@@ -55,7 +58,7 @@ class GuiProgram(Ui_sweepergui):
 
         # Připojení k instrumentu
         #self.inst = Instrument('GPIB0::17::INSTR', visa_location='C:\WINDOWS\SysWOW64\\visa32.dll')
-        self.inst = Instrument('GPIB0::17::INSTR', virtual=True)
+        self.inst = Instrument('GPIB0::17::INSTR', virtual=False)
 
     # --- PLOTTING -----------------------------------------------------------
     # ------------------------------------------------------------------------
@@ -214,6 +217,11 @@ class GuiProgram(Ui_sweepergui):
             sw_max = str(float(sw_max) * 1e3)
             step = str(float(step) * 1e3)
 
+        # TODO: this should be made more logical...
+        self.custom_capacity_used = self.dynamicDelayRadio.isChecked()
+        if self.custom_capacity_used:
+            self.custom_capacity = int(self.capacitySpinBox.value())
+
         delay = str(self.delaySpinBox.value())
         decade = str(self.decadeComboBox.currentIndex())
         n = self.pocetMereniBox.value()
@@ -303,7 +311,14 @@ class GuiProgram(Ui_sweepergui):
                                 step + "," + sweep_range + "," + delay + "X")
 
         # Manual modification of delays for each value
-        delays = [630, 400, 250, 150, 90, 54]
+        if self.custom_capacity_used:
+            if self.chkLoop.checkState():
+                delay_arr = delays.delays_round(float(sw_min), float(
+                    sw_max), int(decade), self.custom_capacity)
+            else:
+                delay_arr = delays.delays_up(float(sw_min), float(
+                    sw_max), int(decade), self.custom_capacity)
+            self.inst.set_custom_delays(delay_arr)
 
         data = []
         self.full_data = []
@@ -315,7 +330,7 @@ class GuiProgram(Ui_sweepergui):
             output = self.run_sweep()
             if output:
                 if not self.sense_local:
-                    output = misc.shift_data(output, cols=self.cols, order=-3)
+                    output = misc.shift_data(output, cols=self.cols, shift=-3)
                 sweep_results = misc.nice_format(output, cols=self.cols)
                 unpacked_results = misc.unpack(sweep_results, cols=self.cols)
                 data.append(unpacked_results)
@@ -407,6 +422,7 @@ class GuiProgram(Ui_sweepergui):
         Exportuje data pomocí ukládacího dialogu Qt. V případě chybného zadání
         souboru nic neudělá a postěžuje si do konzole.
         """
+
         proposed_name = self.save_filename or 'sweep_' + self.sweep_id
 
         # Qt Dialog na výběr souboru k uložení
@@ -540,6 +556,7 @@ class GuiProgram(Ui_sweepergui):
             self.chkAutorange.setChecked(parameters_dict['chk_autorange'])
 
             self.switch_linear()
+            self.switch_dynamic_delay()
 
             print("Nacteni poslednich parametru uspesne! :)")
 
@@ -555,6 +572,16 @@ class GuiProgram(Ui_sweepergui):
         else:
             self.decadeComboBox.setEnabled(False)
             self.stepEdit.setEnabled(True)
+
+    def switch_dynamic_delay(self):
+        const_delay = self.constantDelayRadio.isChecked()
+        dynamic_delay = self.dynamicDelayRadio.isChecked()
+        if const_delay:
+            self.capacitySpinBox.setEnabled(False)
+            self.delaySpinBox.setEnabled(True)
+        else:
+            self.delaySpinBox.setEnabled(False)
+            self.capacitySpinBox.setEnabled(True)
 
     def enable_ui(self, status):
         ui_elements = [
@@ -584,6 +611,7 @@ class GuiProgram(Ui_sweepergui):
 
         if status:
             self.switch_linear()
+            self.switch_dynamic_delay()
 
         if status:
             self.startBtn.clicked.disconnect()

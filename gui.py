@@ -11,7 +11,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_sweepergui(object):
     def setupUi(self, sweepergui):
         sweepergui.setObjectName("sweepergui")
-        sweepergui.resize(1056, 732)
+        sweepergui.resize(1056, 811)
         sweepergui.setMinimumSize(QtCore.QSize(900, 0))
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap("img/logo_crop.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
@@ -161,11 +161,12 @@ class Ui_sweepergui(object):
         self.delaySpinBox.setObjectName("delaySpinBox")
         self.formLayout_3.setWidget(0, QtWidgets.QFormLayout.FieldRole, self.delaySpinBox)
         self.dynamicDelayRadio = QtWidgets.QRadioButton(self.groupBox_6)
-        self.dynamicDelayRadio.setEnabled(False)
+        self.dynamicDelayRadio.setEnabled(True)
         self.dynamicDelayRadio.setObjectName("dynamicDelayRadio")
         self.formLayout_3.setWidget(1, QtWidgets.QFormLayout.LabelRole, self.dynamicDelayRadio)
         self.capacitySpinBox = QtWidgets.QSpinBox(self.groupBox_6)
-        self.capacitySpinBox.setEnabled(False)
+        self.capacitySpinBox.setEnabled(True)
+        self.capacitySpinBox.setProperty("value", 15)
         self.capacitySpinBox.setObjectName("capacitySpinBox")
         self.formLayout_3.setWidget(1, QtWidgets.QFormLayout.FieldRole, self.capacitySpinBox)
         self.formLayout_2.setWidget(5, QtWidgets.QFormLayout.SpanningRole, self.groupBox_6)

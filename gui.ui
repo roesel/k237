@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1056</width>
-    <height>732</height>
+    <height>811</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -342,7 +342,7 @@
          <item row="1" column="0">
           <widget class="QRadioButton" name="dynamicDelayRadio">
            <property name="enabled">
-            <bool>false</bool>
+            <bool>true</bool>
            </property>
            <property name="text">
             <string>Dynamický [pF]</string>
@@ -352,7 +352,10 @@
          <item row="1" column="1">
           <widget class="QSpinBox" name="capacitySpinBox">
            <property name="enabled">
-            <bool>false</bool>
+            <bool>true</bool>
+           </property>
+           <property name="value">
+            <number>15</number>
            </property>
           </widget>
          </item>
