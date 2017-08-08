@@ -33,7 +33,7 @@ def calc_delays(sw_min, sw_max, decade, pF):
     delays = log_delays(fake_currents, pF, decade_points)
     delays = 3 * delays
     # replace all "0 ms" with "1 ms"
-    delays[delays == 0] = 1
+    delays[delays < 10] = 10
     return delays
 
 

@@ -260,6 +260,7 @@ class GuiProgram(Ui_sweepergui):
             sweep_range = '0'
         else:
             sweep_range = str(misc.get_range_number(float(sw_min), float(sw_max)))
+            print("!! Using sweep range: {}".format(sweep_range) )
             if sweep_range == '0':
                 print('POZOR: Manualni nastaveni range selhalo, prilis vysoke proudy?')
 
