@@ -86,7 +86,13 @@ class GuiProgram(Ui_sweepergui):
                 color = '#6600CC'
             else:
                 color = '#FF0000'
-            self.ax.plot(x, y, color=color)
+            if self.chkLoop.checkState():
+                half = int(len(x)/2)
+                end = len(x)
+                self.ax.plot(x[0:half], y[0:half], color=color)
+                self.ax.plot(x[half:end], y[half:end], '--', color=color)
+            else:
+                self.ax.plot(x, y, color=color)
             if self.log_sweep:
                 self.ax.set_xscale('log')
             else:
