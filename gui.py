@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'gui.ui'
+# Form implementation generated from reading ui file '.\gui.ui'
 #
 # Created by: PyQt5 UI code generator 5.6
 #
@@ -11,7 +11,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_sweepergui(object):
     def setupUi(self, sweepergui):
         sweepergui.setObjectName("sweepergui")
-        sweepergui.resize(1056, 811)
+        sweepergui.resize(1056, 823)
         sweepergui.setMinimumSize(QtCore.QSize(900, 0))
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap("img/logo_crop.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
@@ -229,41 +229,41 @@ class Ui_sweepergui(object):
         _translate = QtCore.QCoreApplication.translate
         sweepergui.setWindowTitle(_translate("sweepergui", "Sweeper"))
         self.bigProgBar.setFormat(_translate("sweepergui", "%v/%m"))
-        self.label_9.setText(_translate("sweepergui", "Aktuální sweep:"))
+        self.label_9.setText(_translate("sweepergui", "Current sweep progress:"))
         self.exportButton.setText(_translate("sweepergui", "Export"))
-        self.groupBox.setTitle(_translate("sweepergui", "Ostatní parametry"))
-        self.label_2.setText(_translate("sweepergui", "Počet charakteristik"))
-        self.label_7.setText(_translate("sweepergui", "Sloupce dat"))
+        self.groupBox.setTitle(_translate("sweepergui", "Other parameters"))
+        self.label_2.setText(_translate("sweepergui", "Repetitions"))
+        self.label_7.setText(_translate("sweepergui", "Data columns"))
         self.sourceCheckBox.setText(_translate("sweepergui", "Source"))
         self.measureCheckBox.setText(_translate("sweepergui", "Measure"))
         self.delayCheckBox.setText(_translate("sweepergui", "Delay"))
         self.timeCheckBox.setText(_translate("sweepergui", "Time"))
-        self.label_8.setText(_translate("sweepergui", "Úvodní DC mód [s]"))
-        self.label_13.setText(_translate("sweepergui", "Stabilizace [s]"))
-        self.label_14.setText(_translate("sweepergui", "Nastavení grafu"))
-        self.chkLockRange.setText(_translate("sweepergui", "Zamknout rozsah"))
+        self.label_8.setText(_translate("sweepergui", "Initial DC mode [s]"))
+        self.label_13.setText(_translate("sweepergui", "Stabilization [s]"))
+        self.label_14.setText(_translate("sweepergui", "Plot settings"))
+        self.chkLockRange.setText(_translate("sweepergui", "Lock range"))
         self.startBtn.setText(_translate("sweepergui", "Start"))
-        self.label_10.setText(_translate("sweepergui", "Všechny sweepy:"))
-        self.groupBox_2.setTitle(_translate("sweepergui", "Parametry sweepu"))
+        self.label_10.setText(_translate("sweepergui", "All sweeps progress:"))
+        self.groupBox_2.setTitle(_translate("sweepergui", "Sweep parameters"))
         self.label_3.setText(_translate("sweepergui", "Start [A]"))
         self.startEdit.setText(_translate("sweepergui", "1e-10"))
         self.label_4.setText(_translate("sweepergui", "End [A]"))
         self.endEdit.setText(_translate("sweepergui", "1e-12"))
         self.label_11.setText(_translate("sweepergui", "Step [A]"))
         self.stepEdit.setText(_translate("sweepergui", "1e-12"))
-        self.label_6.setText(_translate("sweepergui", "Bodů/dekádu"))
-        self.label_15.setText(_translate("sweepergui", "Rozsah"))
-        self.chkAutorange.setText(_translate("sweepergui", "Autorange"))
+        self.label_6.setText(_translate("sweepergui", "Points/decade"))
+        self.label_15.setText(_translate("sweepergui", "Range"))
+        self.chkAutorange.setText(_translate("sweepergui", "Automatic"))
         self.groupBox_6.setTitle(_translate("sweepergui", "Delay"))
-        self.constantDelayRadio.setText(_translate("sweepergui", "Konstantní [ms]"))
-        self.dynamicDelayRadio.setText(_translate("sweepergui", "Dynamický [pF]"))
-        self.groupBox_4.setTitle(_translate("sweepergui", "Druh sweepu"))
-        self.logRadioButton.setText(_translate("sweepergui", "Logaritmický"))
-        self.linRadioButton.setText(_translate("sweepergui", "Lineární"))
-        self.chkLoop.setText(_translate("sweepergui", "Obousměrný"))
-        self.groupBox_5.setTitle(_translate("sweepergui", "Zapojení"))
-        self.senseLocalRadioButton.setText(_translate("sweepergui", "Základní (local sense)"))
-        self.senseRemoteRadioButton.setText(_translate("sweepergui", "S děličem (remote sense)"))
+        self.constantDelayRadio.setText(_translate("sweepergui", "Constant [ms]"))
+        self.dynamicDelayRadio.setText(_translate("sweepergui", "Dynamic [pF]"))
+        self.groupBox_4.setTitle(_translate("sweepergui", "Sweep type"))
+        self.logRadioButton.setText(_translate("sweepergui", "Logarithmic"))
+        self.linRadioButton.setText(_translate("sweepergui", "Linear"))
+        self.chkLoop.setText(_translate("sweepergui", "Both ways"))
+        self.groupBox_5.setTitle(_translate("sweepergui", "Setup"))
+        self.senseLocalRadioButton.setText(_translate("sweepergui", "Basic (Local sense)"))
+        self.senseRemoteRadioButton.setText(_translate("sweepergui", "With current divider (Remote sense)"))
 
 
 if __name__ == "__main__":

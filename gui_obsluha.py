@@ -58,7 +58,46 @@ class GuiProgram(Ui_sweepergui):
 
         # Připojení k instrumentu
         #self.inst = Instrument('GPIB0::17::INSTR', visa_location='C:\WINDOWS\SysWOW64\\visa32.dll')
-        self.inst = Instrument('GPIB0::17::INSTR', virtual=False)
+        self.inst = Instrument('GPIB0::17::INSTR', virtual=True)
+
+
+
+    def make_pretty(self):
+        self.littleProgBar.setValue(84)
+        self.littleProgBar.setMaximum(100)
+        self.bigProgBar.setMaximum(5)
+        self.bigProgBar.setValue(3)
+
+        self.startBtn.setText('Stop')
+
+        self.ax.clear()  # Clear contents of current axis
+
+        # Plot cosmetics
+        self.ax.set_xlabel('Current $I$ (nA)')
+        self.ax.set_ylabel('Voltage $U$ (V)')
+        self.ax.set_title('Sweep ID: 2018-04-21_11:22:37  $n$-ZnO/$p$-GaN  sample #692')
+
+        data = []
+        dd = np.loadtxt('demo_data/01.txt')
+        for i in range(int(len(dd.T)/2)):
+            data.append((dd[:,2*i]*1e6, dd[:,2*i+1]))
+
+        color_1 = '#0066FF'
+        color_3 = '#6600CC'
+        color_2 = '#FF0000'
+
+        self.ax.plot(data[2][0], data[2][1], color=color_2)
+        self.ax.plot(data[3][0], data[3][1], '--', color=color_2)
+
+        self.ax.plot(data[4][0], data[4][1], color=color_3)
+        self.ax.plot(data[5][0], data[5][1], '--', color=color_3)
+
+        self.ax.plot(data[0][0], data[0][1], color=color_1)
+        self.ax.plot(data[1][0], data[1][1], '--', color=color_1)
+
+
+        #plt.tight_layout()
+
 
     # --- PLOTTING -----------------------------------------------------------
     # ------------------------------------------------------------------------

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1056</width>
-    <height>823</height>
+    <height>811</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -40,7 +40,7 @@
    <item row="4" column="1">
     <widget class="QLabel" name="label_9">
      <property name="text">
-      <string>Current sweep progress:</string>
+      <string>Aktuální sweep:</string>
      </property>
     </widget>
    </item>
@@ -77,13 +77,13 @@
       </size>
      </property>
      <property name="title">
-      <string>Other parameters</string>
+      <string>Ostatní parametry</string>
      </property>
      <layout class="QFormLayout" name="formLayout">
       <item row="0" column="0">
        <widget class="QLabel" name="label_2">
         <property name="text">
-         <string>Repetitions</string>
+         <string>Počet charakteristik</string>
         </property>
        </widget>
       </item>
@@ -100,7 +100,7 @@
       <item row="1" column="0">
        <widget class="QLabel" name="label_7">
         <property name="text">
-         <string>Data columns</string>
+         <string>Sloupce dat</string>
         </property>
        </widget>
       </item>
@@ -162,7 +162,7 @@
       <item row="2" column="0">
        <widget class="QLabel" name="label_8">
         <property name="text">
-         <string>Initial DC mode [s]</string>
+         <string>Úvodní DC mód [s]</string>
         </property>
        </widget>
       </item>
@@ -179,7 +179,7 @@
       <item row="3" column="0">
        <widget class="QLabel" name="label_13">
         <property name="text">
-         <string>Stabilization [s]</string>
+         <string>Stabilizace [s]</string>
         </property>
        </widget>
       </item>
@@ -193,14 +193,14 @@
       <item row="4" column="0">
        <widget class="QLabel" name="label_14">
         <property name="text">
-         <string>Plot settings</string>
+         <string>Nastavení grafu</string>
         </property>
        </widget>
       </item>
       <item row="4" column="1">
        <widget class="QCheckBox" name="chkLockRange">
         <property name="text">
-         <string>Lock range</string>
+         <string>Zamknout rozsah</string>
         </property>
        </widget>
       </item>
@@ -224,14 +224,14 @@
    <item row="6" column="1">
     <widget class="QLabel" name="label_10">
      <property name="text">
-      <string>All sweeps progress:</string>
+      <string>Všechny sweepy:</string>
      </property>
     </widget>
    </item>
    <item row="0" column="1" colspan="2">
     <widget class="QGroupBox" name="groupBox_2">
      <property name="title">
-      <string>Sweep parameters</string>
+      <string>Parametry sweepu</string>
      </property>
      <layout class="QFormLayout" name="formLayout_2">
       <item row="0" column="0">
@@ -282,7 +282,7 @@
       <item row="4" column="0">
        <widget class="QLabel" name="label_6">
         <property name="text">
-         <string>Points/decade</string>
+         <string>Bodů/dekádu</string>
         </property>
        </widget>
       </item>
@@ -296,14 +296,14 @@
       <item row="8" column="0">
        <widget class="QLabel" name="label_15">
         <property name="text">
-         <string>Range</string>
+         <string>Rozsah</string>
         </property>
        </widget>
       </item>
       <item row="8" column="1">
        <widget class="QCheckBox" name="chkAutorange">
         <property name="text">
-         <string>Automatic</string>
+         <string>Autorange</string>
         </property>
         <property name="checked">
          <bool>true</bool>
@@ -322,7 +322,7 @@
          <item row="0" column="0">
           <widget class="QRadioButton" name="constantDelayRadio">
            <property name="text">
-            <string>Constant [ms]</string>
+            <string>Konstantní [ms]</string>
            </property>
            <property name="checked">
             <bool>true</bool>
@@ -345,7 +345,7 @@
             <bool>true</bool>
            </property>
            <property name="text">
-            <string>Dynamic [pF]</string>
+            <string>Dynamický [pF]</string>
            </property>
           </widget>
          </item>
@@ -365,13 +365,13 @@
       <item row="6" column="0" colspan="2">
        <widget class="QGroupBox" name="groupBox_4">
         <property name="title">
-         <string>Sweep type</string>
+         <string>Druh sweepu</string>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout">
          <item>
           <widget class="QRadioButton" name="logRadioButton">
            <property name="text">
-            <string>Logarithmic</string>
+            <string>Logaritmický</string>
            </property>
            <property name="checked">
             <bool>false</bool>
@@ -384,7 +384,7 @@
             <bool>true</bool>
            </property>
            <property name="text">
-            <string>Linear</string>
+            <string>Lineární</string>
            </property>
            <property name="checked">
             <bool>true</bool>
@@ -394,7 +394,7 @@
          <item>
           <widget class="QCheckBox" name="chkLoop">
            <property name="text">
-            <string>Both ways</string>
+            <string>Obousměrný</string>
            </property>
           </widget>
          </item>
@@ -404,7 +404,7 @@
       <item row="7" column="0" colspan="2">
        <widget class="QGroupBox" name="groupBox_5">
         <property name="title">
-         <string>Setup</string>
+         <string>Zapojení</string>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_3">
          <item>
@@ -413,7 +413,7 @@
             <bool>true</bool>
            </property>
            <property name="text">
-            <string>Basic (Local sense)</string>
+            <string>Základní (local sense)</string>
            </property>
           </widget>
          </item>
@@ -423,7 +423,7 @@
             <bool>true</bool>
            </property>
            <property name="text">
-            <string>With current divider (Remote sense)</string>
+            <string>S děličem (remote sense)</string>
            </property>
            <property name="checked">
             <bool>true</bool>
