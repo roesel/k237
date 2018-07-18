@@ -25,7 +25,12 @@ def make_sure_path_exists(path):
 date = '{:%Y_%m_%d}'.format(datetime.datetime.now())
 fallback_folder = 'C:/Users/tiagulskyi/Desktop/NMIV_data/'+date+'/'
 folder = 'S:/Roesel/nmiv_data/'+date+'/'
-make_sure_path_exists(folder)
+try:
+    make_sure_path_exists(folder)
+    network = True
+except:
+    print("WARNING: Network unreachable, measurement will NOT save onto S:/ drive.")
+    network = False
 make_sure_path_exists(fallback_folder)
 prefix = '{:%Y_%m_%d__%H:%M}_{}_'.format(datetime.datetime.now(), 'KDC')
 # ------------------------
@@ -43,7 +48,7 @@ print('---------------------------------------------')
 # Check for number of parameters
 if sys.argv[1] == '--help':
     print(' Usage: python nmiv.py VOLTAGE name')
-    sys.exit()  
+    sys.exit()
 if len(sys.argv) != 3:
     print('Not enough parameters supplied.')
     sys.exit()
@@ -99,11 +104,12 @@ try:
         vol = float(x)
         cur = float(y)
         print("U = {:+9.3f} V\t\tI = {:+.2E} A".format(vol, cur))
-        try:
-            with open(filename+".txt", "a") as myfile:
-                myfile.write("{}\t{:+9.3f}\t{:+.2E}\n".format(s, vol, cur))
-        except:
-            print('ERROR: Saving txt data on S:/ failed!!')
+        if network:
+            try:
+                with open(filename+".txt", "a") as myfile:
+                    myfile.write("{}\t{:+9.3f}\t{:+.2E}\n".format(s, vol, cur))
+            except:
+                print('ERROR: Saving txt data on S:/ failed!!')
         with open(fallback_filename+".txt", "a") as myfile:
             myfile.write("{}\t{:+9.3f}\t{:+.2E}\n".format(s, vol, cur))
 
@@ -113,7 +119,7 @@ try:
         ax.plot(t, I)
         plt.show(block=False)
         plt.pause(0.001)
-        
+
         s += 1
         time.sleep(1)
 except KeyboardInterrupt:

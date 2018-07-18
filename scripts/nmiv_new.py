@@ -28,7 +28,12 @@ def make_sure_path_exists(path):
 date = '{:%Y_%m_%d}'.format(datetime.datetime.now())
 fallback_folder = 'C:/Users/tiagulskyi/Desktop/NMIV_data/'+date+'/'
 folder = 'S:/Roesel/nmiv_data/'+date+'/'
-make_sure_path_exists(folder)
+try:
+    make_sure_path_exists(folder)
+    network = True
+except:
+    print("WARNING: Network unreachable, measurement will NOT save onto S:/ drive.")
+    network = False
 make_sure_path_exists(fallback_folder)
 prefix = '{:%Y_%m_%d__%H:%M}_{}_'.format(datetime.datetime.now(), 'NMIV')
 # ------------------------
@@ -147,10 +152,11 @@ print("-----\nSaving data...")
 filename = folder+mid.replace(':', '.')
 fallback_filename = fallback_folder+mid.replace(':', '.')
 data_out = np.stack([voltages, currents], axis=1)
-try:
-    np.savetxt(filename+'.txt', data_out, header=get_infostring()+'\nU [V] \t\t\t I[A]', fmt='%.7e')
-except:
-    print('ERROR: Saving txt data on S:/ failed!!')
+if network:
+    try:
+        np.savetxt(filename+'.txt', data_out, header=get_infostring()+'\nU [V] \t\t\t I[A]', fmt='%.7e')
+    except:
+        print('ERROR: Saving txt data on S:/ failed!!')
 np.savetxt(fallback_filename+'.txt', data_out, header=get_infostring()+'\nU [V] \t\t\t I[A]', fmt='%.7e')
 
 print("-----\nPlotting and saving plot...")

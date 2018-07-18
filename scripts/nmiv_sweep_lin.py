@@ -63,7 +63,12 @@ def make_sure_path_exists(path):
 date = '{:%Y_%m_%d}'.format(datetime.datetime.now())
 fallback_folder = 'C:/Users/tiagulskyi/Desktop/NMIV_data/'+date+'/'
 folder = 'S:/Roesel/nmiv_data/'+date+'/'
-make_sure_path_exists(folder)
+try:
+    make_sure_path_exists(folder)
+    network = True
+except:
+    print("WARNING: Network unreachable, measurement will NOT save onto S:/ drive.")
+    network = False
 make_sure_path_exists(fallback_folder)
 prefix = '{:%Y_%m_%d__%H:%M}_{}_'.format(datetime.datetime.now(), 'NMIV')
 # ------------------------
@@ -138,7 +143,7 @@ print('---------------------------------------------')
 rm = visa.ResourceManager('C:\Windows\System32\\visa32.dll')
 inst = rm.open_resource('GPIB0::17::INSTR')
 # Source V, measure I, Sweep
-inst.write("F0,1X")    
+inst.write("F0,1X")
 # Output format (source+measure, no prefix or suffix, all lines of DC data per talk)
 inst.write("G5,2,2X")
 # Create sweep list
@@ -148,41 +153,41 @@ inst.write(sweep_command)
 # If looping, append sweep
 if there_and_back:
     sweep_append = "Q7,{},{},{},{},{}X".format(stop_voltage, start_voltage, number_of_points, rng, delay)
-    inst.write(sweep_append) 
+    inst.write(sweep_append)
 
-inst.write("U8X") 
-out = inst.read() 
-#print('U8X -> ' + out) 
-out = out.replace('\r', '').replace('\n', '') 
-#print("Out: {}".format(out)) 
-sweep_defined_size = int(out[-4:]) 
-print('Number of points in sweep: ' + str(sweep_defined_size)) 
+inst.write("U8X")
+out = inst.read()
+#print('U8X -> ' + out)
+out = out.replace('\r', '').replace('\n', '')
+#print("Out: {}".format(out))
+sweep_defined_size = int(out[-4:])
+print('Number of points in sweep: ' + str(sweep_defined_size))
 
 inst.write("N1X")  # Operate
 inst.write('H0X')  # Trigger
 
 data = ""
 try:
-    sweep_done = False 
-    while not sweep_done: 
-        time.sleep(0.2) 
-        inst.write("U11X") 
-        status = inst.read() 
+    sweep_done = False
+    while not sweep_done:
+        time.sleep(0.2)
+        inst.write("U11X")
+        status = inst.read()
         if (status == 'SMS' + str(sweep_defined_size).zfill(4) + '\r\n'):
             sweep_done = True
             status_edit = status.replace('\r', '').replace('\n', '')
-            progress = int(status_edit[-4:]) 
-            print('Sweep progress: {}/{}\t({} %)'.format(progress, sweep_defined_size, (int(progress / sweep_defined_size * 100)))) 
-        else: 
-            status_edit = status.replace('\r', '').replace('\n', '') 
-            try: 
-                progress = int(status_edit[-4:]) 
-                print('Sweep progress: {}/{}\t({} %)'.format(progress, sweep_defined_size, (int(progress / sweep_defined_size * 100)))) 
-            except: 
+            progress = int(status_edit[-4:])
+            print('Sweep progress: {}/{}\t({} %)'.format(progress, sweep_defined_size, (int(progress / sweep_defined_size * 100))))
+        else:
+            status_edit = status.replace('\r', '').replace('\n', '')
+            try:
+                progress = int(status_edit[-4:])
+                print('Sweep progress: {}/{}\t({} %)'.format(progress, sweep_defined_size, (int(progress / sweep_defined_size * 100))))
+            except:
                 print('Invalid sweep progress?')
     output = inst.read()
-    sweep_results = nice_format(output) 
-    unpacked_results = unpack(sweep_results) 
+    sweep_results = nice_format(output)
+    unpacked_results = unpack(sweep_results)
 
 except KeyboardInterrupt:
     # Handling ^C interrupt
@@ -209,10 +214,11 @@ filename = folder+mid.replace(':', '.')
 fallback_filename = fallback_folder+mid.replace(':', '.')
 data_out = np.array(unpacked_results)
 data_out = np.transpose(data_out)
-try:
-    np.savetxt(filename+'.txt', data_out, header=get_infostring()+'\nU [V] \t\t\t I[A]', fmt='%.7e')
-except:
-    print('ERROR: Saving txt data on S:/ failed!!')
+if network:
+    try:
+        np.savetxt(filename+'.txt', data_out, header=get_infostring()+'\nU [V] \t\t\t I[A]', fmt='%.7e')
+    except:
+        print('ERROR: Saving txt data on S:/ failed!!')
 np.savetxt(fallback_filename+'.txt', data_out, header=get_infostring()+'\nU [V] \t\t\t I[A]', fmt='%.7e')
 
 print("-----\nPlotting and saving plot...")
@@ -221,7 +227,7 @@ x, y = unpacked_results
 if negative:
     x, y = -x, -y
 if (not (y > 0).all()):
-    print('WARNING: Some values are < 0, plot will not show all points!') 
+    print('WARNING: Some values are < 0, plot will not show all points!')
 plt.plot(x, y, marker="o", linestyle="None")
 #plt.xlim([min_voltage, max_voltage])
 if negative:
